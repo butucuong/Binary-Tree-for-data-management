@@ -15,6 +15,7 @@ Car& Car::operator=(Car& m) {						//assign
 	this->l_display = m.l_display;
 	this->l_general = m.l_general;
 	this->l_sound = m.l_sound;
+	return *this;
 }
 Car::Car(const Car& h):Setting(h) {									//copy
 	Display dis(h.l_display);
@@ -40,31 +41,31 @@ void Car::xuatThongTin() {
 	//------------------------------------------------------------------------
 
 	cout << setw(5) << " " << setw(20) << left << "Display: " << setw(15) << left << "Light" << setw(15) << left << "Screen Light" << setw(15) << left << "Taplo Light" << endl;
-	cout << setw(5) << " " << setw(20) << left << " " << setw(15) << left << l_display.get_light_level() << setw(15) << left << l_display.get_screen_light_level() << setw(15) << left << l_display.get_taplo_light_level() << endl;
+	cout << setw(5) << " " << setw(20) << left << " " << setw(15) << left << l_display.getLightLevel() << setw(15) << left << l_display.getScreenLightLevel() << setw(15) << left << l_display.getTaploLightLevel() << endl;
 
 	//------------------------------------------------------------------------
 
 	cout << setw(5) << " " << setw(20) << left << "Sound: " << setw(15) << left << "Media" << setw(15) << left << "Call" << setw(15) << left << "Navigation" << setw(15) << left << "Notification" << endl;
-	cout << setw(5) << " " << setw(20) << left << " " << setw(15) << left << l_sound.get_media_level() << setw(15) << left << l_sound.get_call_level() << setw(15) << left << l_sound.get_navi_level() << setw(15) << left << l_sound.get_notification_level() << endl;
+	cout << setw(5) << " " << setw(20) << left << " " << setw(15) << left << l_sound.getMediaLevel() << setw(15) << left << l_sound.getCallLevel() << setw(15) << left << l_sound.getNaviLevel() << setw(15) << left << l_sound.getNotificationLevel() << endl;
 
 	//------------------------------------------------------------------------
 
 	cout << setw(5) << " " << setw(20) << left << "General: " << setw(15) << left << "Timezone" << setw(15) << left << "Language" << endl;
-	cout << setw(5) << " " << setw(20) << left << "  " << setw(15) << left << l_general.get_timeZone() << setw(15) << left << l_general.get_language() << endl << endl;
+	cout << setw(5) << " " << setw(20) << left << "  " << setw(15) << left << l_general.getTimezone() << setw(15) << left << l_general.getLanguage() << endl << endl;
 
 	cout<<setfill('-') << setw(110)<<"-" <<endl;
 	cout << setfill(' ');
 }
 
 void Car::xuatThongTinDisplay() {
-	cout << setw(20) << left << l_display.getCarName() << setw(25) << left << l_display.getEmail() << setw(20) << left << l_display.getPersonalKey() << setw(20) << left << l_display.getODO() << setw(20) << left << l_display.getServiceRemind() << setw(20) << left << l_display.get_light_level() << setw(20) << left << l_display.get_taplo_light_level() << setw(20) << left << l_display.get_screen_light_level() << endl;
+	cout << setw(20) << left << l_display.getCarName() << setw(25) << left << l_display.getEmail() << setw(20) << left << l_display.getPersonalKey() << setw(20) << left << l_display.getODO() << setw(20) << left << l_display.getServiceRemind() << setw(20) << left << l_display.getLightLevel() << setw(20) << left << l_display.getTaploLightLevel() << setw(20) << left << l_display.getScreenLightLevel() << endl;
 }
 void Car::xuatThongTinSound(){
-	cout << setw(20) << left << l_sound.getCarName() << setw(25) << left << l_sound.getEmail() << setw(20) << left << l_sound.getPersonalKey() << setw(20) << left << l_sound.getODO() << setw(20) << left << l_sound.getServiceRemind() << setw(20) << left << l_sound.get_media_level() << setw(20) << left << l_sound.get_call_level() << setw(20) << left << l_sound.get_navi_level() << setw(20) << left << l_sound.get_notification_level() << endl;
+	cout << setw(20) << left << l_sound.getCarName() << setw(25) << left << l_sound.getEmail() << setw(20) << left << l_sound.getPersonalKey() << setw(20) << left << l_sound.getODO() << setw(20) << left << l_sound.getServiceRemind() << setw(20) << left << l_sound.getMediaLevel() << setw(20) << left << l_sound.getCallLevel() << setw(20) << left << l_sound.getNaviLevel() << setw(20) << left << l_sound.getNotificationLevel() << endl;
 }
 
 void Car::xuatThongTinGeneral() {
-cout << setw(20) << left << l_general.getCarName() << setw(25) << left << l_general.getEmail() << setw(20) << left << l_general.getPersonalKey() << setw(20) << left << l_general.getODO() << setw(20) << left << l_general.getServiceRemind() << setw(15) << left << l_general.get_timeZone() << setw(30) << left << l_general.get_language() << endl;
+cout << setw(20) << left << l_general.getCarName() << setw(25) << left << l_general.getEmail() << setw(20) << left << l_general.getPersonalKey() << setw(20) << left << l_general.getODO() << setw(20) << left << l_general.getServiceRemind() << setw(15) << left << l_general.getTimezone() << setw(30) << left << l_general.getLanguage() << endl;
 }
 
 void Car::writetofileSetting(){
@@ -77,7 +78,7 @@ void Car::writetofileSetting(){
 	else {
 		try {
 			
-				f << setw(10) << left << "Common:" << setw(20) << getCarName() << "/" << setw(25) << getEmail() << "/" << setw(8) << getPersonalKey() << "/" << setw(7) << getODO() << "/" << setw(7) << getServiceRemind() << " " << setw(10) << left << "Sound:" << setw(2) << l_sound.get_media_level() << "/" << setw(2) << l_sound.get_call_level() << "/" << setw(2) << l_sound.get_navi_level() << "/" << setw(2) << l_sound.get_notification_level() << " " << setw(10) << left << "Display:" << setw(2) << l_display.get_light_level() << "/" << setw(2) << l_display.get_screen_light_level() << "/" << setw(2) << l_display.get_taplo_light_level() << " " << setw(10) << left << "General: " << setw(11) << l_general.get_timeZone() << "/" << setw(20) << l_general.get_language() << endl;
+				f << setw(10) << left << "Common:" << setw(20) << getCarName() << "/" << setw(25) << getEmail() << "/" << setw(8) << getPersonalKey() << "/" << setw(7) << getODO() << "/" << setw(7) << getServiceRemind() << " " << setw(10) << left << "Sound:" << setw(2) << l_sound.getMediaLevel() << "/" << setw(2) << l_sound.getCallLevel() << "/" << setw(2) << l_sound.getNaviLevel() << "/" << setw(2) << l_sound.getNotificationLevel() << " " << setw(10) << left << "Display:" << setw(2) << l_display.getLightLevel() << "/" << setw(2) << l_display.getScreenLightLevel() << "/" << setw(2) << l_display.getTaploLightLevel() << " " << setw(10) << left << "General: " << setw(11) << l_general.getTimezone() << "/" << setw(20) << l_general.getLanguage() << endl;
 		
 		}
 		catch (...) {

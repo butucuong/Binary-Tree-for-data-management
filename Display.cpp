@@ -2,52 +2,65 @@
 
 Display::Display() : Setting()
 {
-	light_level = screen_light_level = taplo_light_level = 0;
+	m_light_level = m_screen_light_level = m_taplo_light_level = 0;
 }
 Display::Display(Setting h, int n1, int n2, int n3) : Setting(h)	//Copy constructor for inheritance
 {
-	light_level = n1;
-	screen_light_level = n2;
-	taplo_light_level = n3;
+	m_light_level = n1;
+	m_screen_light_level = n2;
+	m_taplo_light_level = n3;
+}
+
+Display::Display(Setting h)
+	:Setting(h)
+{
+	const int C_DEFAULT_LIGHT_LEVEL = 1;
+	const int C_DEFAULT_SCREEN_LIGHT_LEVEL = 1;
+	const int C_DEFAULT_TAPLO_LIGHT_LEVEL = 1;
+	m_light_level = C_DEFAULT_LIGHT_LEVEL;
+	m_screen_light_level = C_DEFAULT_SCREEN_LIGHT_LEVEL;
+	m_taplo_light_level = C_DEFAULT_TAPLO_LIGHT_LEVEL;
+
 }
 
 Display::Display(const Display& h) :Setting(h) {						//Copy method
-	this->light_level = h.light_level;
-	this->screen_light_level = h.screen_light_level;
-	this->taplo_light_level = h.taplo_light_level;
+	this->m_light_level = h.m_light_level;
+	this->m_screen_light_level = h.m_screen_light_level;
+	this->m_taplo_light_level = h.m_taplo_light_level;
 }
 Display& Display:: operator =(Display& m) {						//Assign operator
 	if (this == &m) return *this;
 	Setting(*this) = Setting::operator=(m);
-	this->light_level = m.light_level;
-	this->screen_light_level = m.screen_light_level;
-	this->taplo_light_level = m.taplo_light_level;
+	this->m_light_level = m.m_light_level;
+	this->m_screen_light_level = m.m_screen_light_level;
+	this->m_taplo_light_level = m.m_taplo_light_level;
+	return *this;
 }
 Display::~Display() {
 }
 
-int Display::get_light_level() {
-	return light_level;
+int Display::getLightLevel() {
+	return m_light_level;
 }
 
-int Display::get_screen_light_level() {
-	return	screen_light_level;
+int Display::getScreenLightLevel() {
+	return	m_screen_light_level;
 }
 
-int Display::get_taplo_light_level() {
-	return taplo_light_level;
+int Display::getTaploLightLevel() {
+	return m_taplo_light_level;
 }
 
-void Display::set_light_level(int lightlv) {
-	light_level = lightlv;
+void Display::setLightLevel(int lightlv) {
+	m_light_level = lightlv;
 }
 
-void Display::set_screen_light_level(int scrlilv) {
-	screen_light_level = scrlilv;
+void Display::setScreenLightLevel(int scrlilv) {
+	m_screen_light_level = scrlilv;
 }
 
-void Display::set_taplo_light_level(int taplilv) {
-	taplo_light_level = taplilv;
+void Display::setTaploLightLevel(int taplilv) {
+	m_taplo_light_level = taplilv;
 }
 
 void Display::nhapThongTin() {							//Nhap thong tin tu ban phim bang setter
@@ -61,25 +74,25 @@ void Display::nhapThongTin() {							//Nhap thong tin tu ban phim bang setter
 		a = atoi(ca);
 	}
 
-	set_light_level(a);
+	setLightLevel(a);
 	cout << "Screen light level: ";
 	cin >> cb;
 	if (isdigit(cb[0])) {
 		b = atoi(cb);
 	}
-	set_screen_light_level(b);
+	setScreenLightLevel(b);
 	cout << "Taplo light level: ";
 	cin >> cc;
 	if (isdigit(cc[0])) {
 		c = atoi(cc);
 	}
-	set_taplo_light_level(c);
+	setTaploLightLevel(c);
 }
 void Display::xuatThongTin() {							//Xuat thong tin bang Getter
 
 	cout << endl;
-	cout << "Ligth level: " << get_light_level();
-	cout << "\nScreen light level: " << get_screen_light_level();
-	cout << "\nTaplo light level: " << get_taplo_light_level();
+	cout << "Ligth level: " << getLightLevel();
+	cout << "\nScreen light level: " << getScreenLightLevel();
+	cout << "\nTaplo light level: " << getTaploLightLevel();
 }
 

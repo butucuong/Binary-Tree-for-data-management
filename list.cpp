@@ -152,7 +152,7 @@ void List::insertNode(Car item)
 
 
 
-void List::insertNode_by_name(Car item)
+void List::insertNodeByName(Car item)
 {
 
 	TreeNode* newNode = nullptr;
@@ -269,16 +269,16 @@ bool List::searchNode(Car data, TreeNode*& nodePtr) {								//search element
 	}
 }
 
-bool List::searchNodebyID(string a, TreeNode*& nodePtr) {
+bool List::searchNodeByID(string a, TreeNode*& nodePtr) {
 	if (nodePtr != NULL) {
 		if (a == nodePtr->value.getPersonalKey()) {
 			return true;
 		}
 		if (a < nodePtr->value.getPersonalKey()) {
-			return searchNodebyID(a, nodePtr->left);
+			return searchNodeByID(a, nodePtr->left);
 		}
 		else {
-			return searchNodebyID(a, nodePtr->right);
+			return searchNodeByID(a, nodePtr->right);
 		}
 	}
 	else {
@@ -290,12 +290,12 @@ bool List::searchNode(Car item)
 {
 	return searchNode(item, root);
 }
-bool List::searchNodebyID(string str) {
-	return searchNodebyID(str, root);
+bool List::searchNodeByID(string str) {
+	return searchNodeByID(str, root);
 }
 
 void List::updateData(string str) {
-	if (searchNodebyID(str)) {
+	if (searchNodeByID(str)) {
 		updateData(str, root);
 
 	}
@@ -343,7 +343,7 @@ void List::updateData(string a, TreeNode*& NodePtr) {
 
 }
 
-void List::nhap_thong_tin_display(TreeNode*& NodePtr) {
+void List::nhapThongTinDisplay(TreeNode*& NodePtr) {
 	static int countdis = 1;
 	bool flagyn{ false };
 	char continues('c');
@@ -351,13 +351,13 @@ void List::nhap_thong_tin_display(TreeNode*& NodePtr) {
 
 	if (NodePtr != NULL) {
 
-		nhap_thong_tin_display(NodePtr->left);
+		nhapThongTinDisplay(NodePtr->left);
 
 		system("cls");
 		cout << "--- Input Display setting ---\n";
 		cout << "Car index: " << countdis << endl;
 		NodePtr->value.print_user_data();
-		if (NodePtr->value.l_display.get_light_level() == 1 && NodePtr->value.l_display.get_screen_light_level() == 1 && NodePtr->value.l_display.get_taplo_light_level() == 1) {
+		if (NodePtr->value.l_display.getLightLevel() == 1 && NodePtr->value.l_display.getScreenLightLevel() == 1 && NodePtr->value.l_display.getTaploLightLevel() == 1) {
 
 			cout << "\n\t->This is car, data will be appended to your list." << endl;
 			NodePtr->value.l_display.nhapThongTin();
@@ -387,7 +387,7 @@ void List::nhap_thong_tin_display(TreeNode*& NodePtr) {
 					cin.clear();
 					cin.ignore(100, '\n');
 
-					nhap_thong_tin_display(NodePtr->right);
+					nhapThongTinDisplay(NodePtr->right);
 					flagyn = true;
 
 				}
@@ -413,18 +413,18 @@ void List::nhap_thong_tin_display(TreeNode*& NodePtr) {
 	}
 }
 
-void List::nhap_thong_tin_sound(TreeNode*& NodePtr) {
+void List::nhapThongTinSound(TreeNode*& NodePtr) {
 	static int countsnd = 1;
 	bool flagyn{ false };
 	char continues('c');
 	if (NodePtr != NULL) {
-		nhap_thong_tin_sound(NodePtr->left);
+		nhapThongTinSound(NodePtr->left);
 
 		system("cls");
 		cout << "--- Input Sound setting ---\n";
 		cout << "Car index: " << countsnd << endl;
 		NodePtr->value.print_user_data();
-		if (NodePtr->value.l_sound.get_call_level() == 1 && NodePtr->value.l_sound.get_media_level() == 1 && NodePtr->value.l_sound.get_navi_level() == 1 && NodePtr->value.l_sound.get_notification_level() == 1) {
+		if (NodePtr->value.l_sound.getCallLevel() == 1 && NodePtr->value.l_sound.getMediaLevel() == 1 && NodePtr->value.l_sound.getNaviLevel() == 1 && NodePtr->value.l_sound.getNotificationLevel() == 1) {
 
 			cout << "\n\t->This is car, data will be appended to your list." << endl;
 			NodePtr->value.l_sound.nhapThongTin();
@@ -452,7 +452,7 @@ void List::nhap_thong_tin_sound(TreeNode*& NodePtr) {
 
 					cin.clear();
 					cin.ignore(100, '\n');
-					nhap_thong_tin_sound(NodePtr->right);
+					nhapThongTinSound(NodePtr->right);
 					flagyn = true;
 
 				}
@@ -473,18 +473,18 @@ void List::nhap_thong_tin_sound(TreeNode*& NodePtr) {
 
 }
 
-void List::nhap_thong_tin_general(TreeNode*& NodePtr) {
+void List::nhapThongTinGeneral(TreeNode*& NodePtr) {
 	static int countgen = 1;
 	bool flagyn{ false };
 	char continues('c');
 	if (NodePtr != NULL) {
-		nhap_thong_tin_general(NodePtr->left);
+		nhapThongTinGeneral(NodePtr->left);
 
 		system("cls");
 		cout << "--- Input General setting ---\n";
 		cout << "Car index: " << countgen << endl;
 		NodePtr->value.print_user_data();
-		if (NodePtr->value.l_general.get_language() == "Mandarin (entire branch)" && NodePtr->value.l_general.get_timeZone() == "(GMT-12:00)") {
+		if (NodePtr->value.l_general.getLanguage() == "Mandarin (entire branch)" && NodePtr->value.l_general.getTimezone() == "(GMT-12:00)") {
 
 			cout << "\n\t->This is car, data will be appended to your list." << endl;
 			NodePtr->value.l_general.nhapThongTin();
@@ -512,7 +512,7 @@ void List::nhap_thong_tin_general(TreeNode*& NodePtr) {
 
 					cin.clear();
 					cin.ignore(100, '\n');
-					nhap_thong_tin_general(NodePtr->right);
+					nhapThongTinGeneral(NodePtr->right);
 					flagyn = true;
 
 				}
@@ -534,14 +534,14 @@ void List::nhap_thong_tin_general(TreeNode*& NodePtr) {
 }
 
 
-void List::nhap_thong_tin_general() {
-	nhap_thong_tin_general(root);
+void List::nhapThongTinGeneral() {
+	nhapThongTinGeneral(root);
 }
-void List::nhap_thong_tin_sound() {
-	nhap_thong_tin_sound(root);
+void List::nhapThongTinSound() {
+	nhapThongTinSound(root);
 }
-void List::nhap_thong_tin_display() {
-	nhap_thong_tin_display(root);
+void List::nhapThongTinDisplay() {
+	nhapThongTinDisplay(root);
 }
 
 
@@ -604,10 +604,10 @@ int List::treeLevel(TreeNode* nodePtr)
 
 }
 
-bool List::checkAvl(TreeNode* t) {
+bool List::checkAVL(TreeNode* t) {
 	if (t == NULL) 	return true;
 	if (abs(treeLevel(t->left) - treeLevel(t->right)) > 1) return false;
-	return checkAvl(t->left) && checkAvl(t->right);
+	return checkAVL(t->left) && checkAVL(t->right);
 }
 
 
@@ -656,7 +656,7 @@ List::TreeNode* List::updateTreeAvl(TreeNode* t) {
 	return t;
 }
 void List::updateTreeAVL() {
-	while (!checkAvl(root)) {
+	while (!checkAVL(root)) {
 		root = updateTreeAvl(root);
 	}
 }
@@ -670,12 +670,12 @@ void List::vector2BST_by_name(TreeNode*& NodePtr) {
 
 	}
 	for (int i = 0; i < arr.size(); i++) {
-		insertNode_by_name(arr[i]);
+		insertNodeByName(arr[i]);
 	}
 }
 
 
-void List::BST_by_name() {
+void List::BSTByName() {
 
 	vector2BST_by_name(root);
 }
@@ -696,7 +696,7 @@ void List::vector2BST_by_ID(TreeNode*& NodePtr) {
 }
 
 
-void List::BST_by_ID() {
+void List::BSTByID() {
 	vector2BST_by_ID(root);
 
 }
@@ -718,49 +718,49 @@ void List::BST2vector(TreeNode* nodePtr, vector<Car>& arr)
 }
 
 
-void List::xuat_thong_tin_display(TreeNode* NodePtr) {
+void List::xuatThongTinDisplay(TreeNode* NodePtr) {
 
 	if (NodePtr != NULL) {
-		xuat_thong_tin_display(NodePtr->left);
+		xuatThongTinDisplay(NodePtr->left);
 		NodePtr->value.xuatThongTinDisplay();
-		xuat_thong_tin_display(NodePtr->right);
+		xuatThongTinDisplay(NodePtr->right);
 	}
 }
-void List::xuat_thong_tin_display() {
-	xuat_thong_tin_display(this->root);
+void List::xuatThongTinDisplay() {
+	xuatThongTinDisplay(this->root);
 }
 
-void List::xuat_thong_tin_sound(TreeNode* NodePtr) {
+void List::xuatThongTinSound(TreeNode* NodePtr) {
 	if (NodePtr != NULL) {
-		xuat_thong_tin_sound(NodePtr->left);
+		xuatThongTinSound(NodePtr->left);
 		NodePtr->value.xuatThongTinSound();
-		xuat_thong_tin_sound(NodePtr->right);
+		xuatThongTinSound(NodePtr->right);
 	}
 }
-void List::xuat_thong_tin_sound() {
-	xuat_thong_tin_sound(this->root);
+void List::xuatThongTinSound() {
+	xuatThongTinSound(this->root);
 }
 
 
-void List::xuat_thong_tin_general(TreeNode* NodePtr) {
+void List::xuatThongTinGeneral(TreeNode* NodePtr) {
 	if (NodePtr != NULL) {
-		xuat_thong_tin_general(NodePtr->left);
+		xuatThongTinGeneral(NodePtr->left);
 		NodePtr->value.xuatThongTinGeneral();
-		xuat_thong_tin_general(NodePtr->right);
+		xuatThongTinGeneral(NodePtr->right);
 	}
 }
-void List::xuat_thong_tin_general() {
-	xuat_thong_tin_general(this->root);
+void List::xuatThongTinGeneral() {
+	xuatThongTinGeneral(this->root);
 }
 
 
-void List::xuat_thong_tin_tat_ca(TreeNode* NodePtr) {
+void List::xuatThongTinTatCa(TreeNode* NodePtr) {
 	if (NodePtr != NULL) {
-		xuat_thong_tin_tat_ca(NodePtr->left);
+		xuatThongTinTatCa(NodePtr->left);
 		NodePtr->value.xuatThongTin();
-		xuat_thong_tin_tat_ca(NodePtr->right);
+		xuatThongTinTatCa(NodePtr->right);
 	}
 }
-void List::xuat_thong_tin_tat_ca() {
-	xuat_thong_tin_tat_ca(this->root);
+void List::xuatThongTinTatCa() {
+	xuatThongTinTatCa(this->root);
 }

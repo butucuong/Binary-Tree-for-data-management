@@ -44,17 +44,17 @@ private:
 	void vector2BST_by_ID(TreeNode*& NodePtr);							//Chuyen du lieu tu vector ve cay
 
 	bool searchNode(Car, TreeNode*&);									//search elemen
-	bool searchNodebyID(string a, TreeNode*&);
+	bool searchNodeByID(string a, TreeNode*&);
 	void updateData(string a, TreeNode*&);
-	void nhap_thong_tin_display( TreeNode*&);
-	void nhap_thong_tin_general(TreeNode*&);
-	void nhap_thong_tin_sound(TreeNode*&);
+	void nhapThongTinDisplay( TreeNode*&);
+	void nhapThongTinGeneral(TreeNode*&);
+	void nhapThongTinSound(TreeNode*&);
 
 
-	void xuat_thong_tin_tat_ca(TreeNode* NodePtr);
-	void xuat_thong_tin_display(TreeNode* NodePtr);
-	void xuat_thong_tin_sound(TreeNode* NodePtr);
-	void xuat_thong_tin_general(TreeNode* NodePtr);
+	void xuatThongTinTatCa(TreeNode* NodePtr);
+	void xuatThongTinDisplay(TreeNode* NodePtr);
+	void xuatThongTinSound(TreeNode* NodePtr);
+	void xuatThongTinGeneral(TreeNode* NodePtr);
 
 	void writetofileSetting(TreeNode* Nodeptr);
 
@@ -70,30 +70,30 @@ public:
 	~List();
 	void destroyTree();
 	void insertNode(Car);
-	void insertNode_by_name(Car);
-	bool checkAvl(TreeNode* t);
+	void insertNodeByName(Car);
+	bool checkAVL(TreeNode* t);
 
 	
 	void updateTreeAVL();
 
 	int size();
 	bool searchNode(Car item);
-	bool searchNodebyID(string);
+	bool searchNodeByID(string);
 	void remove(Car);
 	int displayCount();
 
 	void updateData(string str);
-	void nhap_thong_tin_display();
-	void nhap_thong_tin_sound();
-	void nhap_thong_tin_general();
+	void nhapThongTinDisplay();
+	void nhapThongTinSound();
+	void nhapThongTinGeneral();
 
-	void BST_by_name();													//Sort binary tree by name
-	void BST_by_ID();													//Sort binary tree by ID
+	void BSTByName();													//Sort binary tree by name
+	void BSTByID();													//Sort binary tree by ID
 
-	void xuat_thong_tin_tat_ca();
-	void xuat_thong_tin_display();
-	void xuat_thong_tin_sound();
-	void xuat_thong_tin_general();
+	void xuatThongTinTatCa();
+	void xuatThongTinDisplay();
+	void xuatThongTinSound();
+	void xuatThongTinGeneral();
 
 	void writetofileSetting();
 };

@@ -4,25 +4,25 @@
 
 Setting::Setting()
 {
-	car_name="";
-	personal_key="" ; 
-	email= "";			
-	odo=0;
-	service_remind=0;
+	m_car_name="";
+	m_personal_key="" ; 
+	m_email= "";			
+	m_odo=0;
+	m_service_remind=0;
 }
 Setting::Setting(string name, string key, string mail, int n1, int n2) {
-	car_name = name;
-	personal_key = key;
-	email = mail;
-	odo = n1;
-	service_remind = n2;
+	m_car_name = name;
+	m_personal_key = key;
+	m_email = mail;
+	m_odo = n1;
+	m_service_remind = n2;
 }
 Setting::Setting(const Setting& h) {
-	this->car_name = h.car_name;
-	this->email = h.email;
-	this->personal_key = h.personal_key;
-	this->odo = h.odo;
-	this->service_remind = h.service_remind;
+	this->m_car_name = h.m_car_name;
+	this->m_email = h.m_email;
+	this->m_personal_key = h.m_personal_key;
+	this->m_odo = h.m_odo;
+	this->m_service_remind = h.m_service_remind;
 }
 Setting::~Setting(){
 	
@@ -30,56 +30,57 @@ Setting::~Setting(){
 Setting& Setting::operator =(Setting& m) {
 	if (this == &m) return *this;					//Avoid self-assigning
 
-	this->car_name = m.car_name;
-	this->email = m.email;
-	this->personal_key = m.personal_key;
-	this->odo = m.odo;
-	this->service_remind = m.service_remind;
-};
+	this->m_car_name = m.m_car_name;
+	this->m_email = m.m_email;
+	this->m_personal_key = m.m_personal_key;
+	this->m_odo = m.m_odo;
+	this->m_service_remind = m.m_service_remind;
+	return *this;
+}
  
 string Setting::getEmail()
 {
-	return email;
+	return m_email;
 }
 
 string Setting::getCarName() {
-	return car_name;
+	return m_car_name;
 }
 
 string Setting::getPersonalKey() {
 
-	return personal_key;
+	return m_personal_key;
 }
 
 int Setting::getODO() {
-	return odo;
+	return m_odo;
 }
 
 int Setting::getServiceRemind() {
-	return service_remind;
+	return m_service_remind;
 }
 
 
 
 void Setting::setCarName(string data) {
 
-	car_name = data;
+	m_car_name = data;
 }
 void Setting::setPersonalKey(string data2) {
-	personal_key = data2;
+	m_personal_key = data2;
 
 }
 void Setting::setEmail(string data1)
 {
-	email = data1;
+	m_email = data1;
 }
 
 void Setting::setODO(int data3) {
-	odo = data3;
+	m_odo = data3;
 
 }
 void Setting::setServiceRemind(int data4) {
-	service_remind = data4;
+	m_service_remind = data4;
 
 }
 
@@ -176,7 +177,7 @@ bool Setting::operator > (const Setting& right)
 {
 	bool status;
 
-	if (personal_key > right.personal_key)
+	if (m_personal_key > right.m_personal_key)
 		status = true;
 	else
 		status = false;
@@ -188,7 +189,7 @@ bool Setting::operator < (const Setting& right)
 {
 	bool status;
 
-	if (personal_key < right.personal_key)
+	if (m_personal_key < right.m_personal_key)
 		status = true;
 	else
 		status = false;
@@ -200,7 +201,7 @@ bool Setting::operator == (const Setting& right)
 {
 	bool status;
 
-	if (personal_key == right.personal_key)
+	if (m_personal_key == right.m_personal_key)
 		status = true;
 	else
 		status = false;
@@ -210,7 +211,7 @@ bool Setting::operator == (const Setting& right)
 
 bool operator==(const Setting& lhs, const Setting& rhs) {
 	bool status;
-	if (lhs.car_name == rhs.car_name) {
+	if (lhs.m_car_name == rhs.m_car_name) {
 		status = true;
 	}
 	else
@@ -219,7 +220,7 @@ bool operator==(const Setting& lhs, const Setting& rhs) {
 }
 bool operator<(const Setting& lhs, const Setting& rhs) {
 	bool status;
-	if (lhs.car_name < rhs.car_name) {
+	if (lhs.m_car_name < rhs.m_car_name) {
 		status = true;
 	}
 	else
@@ -228,7 +229,7 @@ bool operator<(const Setting& lhs, const Setting& rhs) {
 }
 bool operator>(const Setting& lhs, const Setting& rhs) {
 	bool status;
-	if (lhs.car_name > rhs.car_name) {
+	if (lhs.m_car_name > rhs.m_car_name) {
 		status = true;
 	}
 	else

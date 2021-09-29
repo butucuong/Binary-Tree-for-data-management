@@ -40,11 +40,11 @@ public:
 	friend bool operator<(const Setting& lhs, const Setting& rhs);
 	friend bool operator>(const Setting& lhs, const Setting& rhs);
 protected:
-	string car_name;
-	string personal_key; 	// Chuoi 8 ky tu so
-	string email;			// email format abc@xyz.com
-	int odo;
-	int service_remind;
+	string m_car_name;
+	string m_personal_key; 	// Chuoi 8 ky tu so
+	string m_email;			// email format abc@xyz.com
+	int m_odo;
+	int m_service_remind;
 };
 
 

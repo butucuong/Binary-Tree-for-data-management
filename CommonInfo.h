@@ -15,18 +15,18 @@ public:
 	CommonInfo& operator=(CommonInfo& m);
 	~CommonInfo();
 	string getNumber() {
-		return number;
+		return m_number;
 	};
 	string getName() {
-		return name;
+		return m_name;
 	};
 	
 	void setNumber(string data) {
-		number = data;
+		m_number = data;
 	};
 	
 	void setName(string data1) {
-		name = data1;
+		m_name = data1;
 	};
 	
 	void printData(vector<CommonInfo>a) {
@@ -49,8 +49,8 @@ public:
 	friend bool operator<(const CommonInfo& lhs, const CommonInfo& rhs);
 	friend bool operator>(const CommonInfo& lhs, const CommonInfo& rhs);
 protected:
-	string number{""};
-	string name{ "" };
-	string dash{""};
+	string m_number{""};
+	string m_name{ "" };
+	string m_dash{""};
 };
 

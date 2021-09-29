@@ -1,32 +1,48 @@
 #include "Sound.h"
 
 Sound::Sound() : Setting() {
-	navi_level = media_level = call_level = notification_level = 0;
+	m_navi_level = m_media_level = m_call_level = m_notification_level = 0;
 }
 Sound::Sound(Setting h, int media, int call, int navi, int noti) : Setting(h)
 { //Copy constructor for inheritance
-	media_level = media;
-	call_level = call;
-	navi_level = navi;
-	notification_level = noti;
+	m_media_level = media;
+	m_call_level = call;
+	m_navi_level = navi;
+	m_notification_level = noti;
+}
+
+Sound::Sound(Setting h)
+	:Setting(h)
+
+{
+	const int C_DEFAULT_MEDIA_LEVEL = 1;
+	const int C_DEFAULT_CALL_LEVEL = 1;
+	const int C_DEFAULT_NAVI_LEVEL = 1;
+	const int C_DEFAULT_NOTIF_LEVEL = 1;
+
+	m_media_level =C_DEFAULT_MEDIA_LEVEL;
+	m_call_level =C_DEFAULT_CALL_LEVEL;
+	m_navi_level = C_DEFAULT_NAVI_LEVEL;
+	m_notification_level = C_DEFAULT_NOTIF_LEVEL;
+
 }
 
 Sound::Sound(const Sound& h) :Setting(h) {
-	this->call_level = h.call_level;
-	this->navi_level = h.navi_level;
-	this->notification_level = h.notification_level;
-	this->media_level = h.media_level;
+	this->m_call_level = h.m_call_level;
+	this->m_navi_level = h.m_navi_level;
+	this->m_notification_level = h.m_notification_level;
+	this->m_media_level = h.m_media_level;
 
 }
 Sound& Sound:: operator =(Sound& m) {
 	if (this == &m) return *this;
 	Setting(*this) = Setting::operator=(m);
-	this->call_level = m.call_level;
-	this->navi_level = m.navi_level;
-	this->notification_level = m.notification_level;
-	this->media_level = m.media_level;
-
-};
+	this->m_call_level = m.m_call_level;
+	this->m_navi_level = m.m_navi_level;
+	this->m_notification_level = m.m_notification_level;
+	this->m_media_level = m.m_media_level;
+	return *this;
+}
 Sound::~Sound() {}
 /*---Dung setter de nhap thong tin---*/
 void Sound::nhapThongTin() {
@@ -39,70 +55,70 @@ void Sound::nhapThongTin() {
 	if (isdigit(ca[0])) {
 		a = atoi(ca);
 	}
-	set_media_level(a);
+	setMediaLevel(a);
 	cout << "Call volume level: ";
 	cin >> cb;
 	if (isdigit(cb[0])) {
 		b = atoi(cb);
 	}
-	set_call_level(b);
+	setCallLevel(b);
 	cout << "Navigation volume level: ";
 	cin >> cc;
 	if (isdigit(cc[0])) {
 		c = atoi(cc);
 	}
-	set_navi_level(c);
+	setNaviLevel(c);
 
 	cout << "Notification volume level: ";
 	cin >> cd;
 	if (isdigit(cd[0])) {
 		d = atoi(cd);
 	}
-	set_notification_level(d);
+	setNotificationLevel(d);
 }
 /*---Dung getter de xuat thong tin---*/
 void Sound::xuatThongTin() {
 
 
-	cout << "\nMedia volume level: " << get_media_level();
+	cout << "\nMedia volume level: " << getMediaLevel();
 	cout << endl;
-	cout << "Call volume level: " << get_call_level(); cout << endl;
-	cout << "Navigation volume level: " << get_navi_level();
+	cout << "Call volume level: " << getCallLevel(); cout << endl;
+	cout << "Navigation volume level: " << getNaviLevel();
 	cout << endl;
-	cout << "Notification volume level: " << get_notification_level(); cout << endl;
+	cout << "Notification volume level: " << getNotificationLevel(); cout << endl;
 
 }
 
-int Sound::get_media_level() {
-	return media_level;
+int Sound::getMediaLevel() {
+	return m_media_level;
 }
 
-int Sound::get_call_level() {
-	return call_level;
+int Sound::getCallLevel() {
+	return m_call_level;
 }
 
-int Sound::get_navi_level() {
-	return navi_level;
+int Sound::getNaviLevel() {
+	return m_navi_level;
 }
 
-int Sound::get_notification_level() {
-	return notification_level;
+int Sound::getNotificationLevel() {
+	return m_notification_level;
 
 }
 
-void Sound::set_media_level(int medialv) {
-	media_level = medialv;
+void Sound::setMediaLevel(int medialv) {
+	m_media_level = medialv;
 }
 
-void Sound::set_call_level(int calllv) {
-	call_level = calllv;
+void Sound::setCallLevel(int calllv) {
+	m_call_level = calllv;
 }
 
-void Sound::set_navi_level(int navilv) {
-	navi_level = navilv;
+void Sound::setNaviLevel(int navilv) {
+	m_navi_level = navilv;
 }
 
-void Sound::set_notification_level(int notilv) {
-	notification_level = notilv;
+void Sound::setNotificationLevel(int notilv) {
+	m_notification_level = notilv;
 }
 

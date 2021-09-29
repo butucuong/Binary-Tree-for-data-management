@@ -3,24 +3,33 @@
 
 
 //external vector
-extern vector<CommonInfo> timezoneList;
-extern vector<CommonInfo> languageList;
+extern vector<CommonInfo> g_timezone_list;
+extern vector<CommonInfo> g_language_list;
 
 General::General() :Setting()                    //Default constructor
 {
-    timeZone = language = "";
+    m_timezone = m_language = "";
 }
 General::General(Setting h, string time, string ngonngu) : Setting(h)
 { //Parameter constructor
-    timeZone = time;
-    language = ngonngu;
+    m_timezone = time;
+    m_language = ngonngu;
+}
+General::General(Setting h)
+    :Setting(h)
+
+{
+    const string C_DEFAULT_TIMEZONE = "(GMT-12:00)";
+    const string C_DEFAULT_LANGUAGE = "Mandarin (entire branch)";
+    m_timezone = C_DEFAULT_TIMEZONE;
+    m_language = C_DEFAULT_LANGUAGE;
 }
 General::~General() {                                //Destructor
 
 }
 General::General(const General& h) :Setting(h) {                      //Copy method
-    this->language = h.language;
-    this->timeZone = h.timeZone;
+    this->m_language = h.m_language;
+    this->m_timezone = h.m_timezone;
 
 }
 
@@ -28,9 +37,10 @@ General& General::operator = (General& m) {            //Assign operator
     if (this == &m) return *this;
 
     Setting(*this) = Setting::operator=(m);
-    this->language = m.language;
-    this->timeZone = m.timeZone;
-};
+    this->m_language = m.m_language;
+    this->m_timezone = m.m_timezone;
+    return *this;
+}
 
 void General::nhapThongTin() {
     char ca[5], cb[5];
@@ -38,7 +48,7 @@ void General::nhapThongTin() {
 
     int a{}, b{};
     cout << "\n--- SELECT TIMEZONE DATA ---\n";
-    printData(timezoneList);
+    printData(g_timezone_list);
     try {
         while (flag != true) {
 
@@ -53,9 +63,9 @@ void General::nhapThongTin() {
                 cout << "Illegal choice, there are 32 timezones in data, please choose again." << endl;									//Xuat thong bao va bat dau lai vong lap neu nhap so lon hon du lieu
                 continue;
             }
-            cout << timezoneList.at(a).getNumber() << ":" << timezoneList.at(a).getName();
+            cout << g_timezone_list.at(a).getNumber() << ":" << g_timezone_list.at(a).getName();
 
-            set_timeZone(timezoneList.at(a).getNumber());
+            setTimezone(g_timezone_list.at(a).getNumber());
 
 
             flag = true;
@@ -69,7 +79,7 @@ void General::nhapThongTin() {
     flag = false;
     cout << "\n\n--- SELECT LANGUAGE DATA ---\n ";
 
-    printData(languageList);
+    printData(g_language_list);
     try {
         while (flag != true) {
 
@@ -84,8 +94,8 @@ void General::nhapThongTin() {
                 cout << "Illegal choice, there are 30 languages in data." << endl;									//Xuat thong bao va bat dau lai vong lap neu nhap so lon hon du lieu
                 continue;
             }
-            cout << languageList.at(b).getNumber() << ":" << languageList.at(b).getName();
-            set_language(languageList.at(b).getName());
+            cout << g_language_list.at(b).getNumber() << ":" << g_language_list.at(b).getName();
+            setLanguage(g_language_list.at(b).getName());
             cout << endl;
             flag = true;
             system("pause");
@@ -100,30 +110,30 @@ void General::nhapThongTin() {
 
 void General::xuatThongTin() {
 
-    cout << "\nTimezone: " << get_timeZone() << endl;
-    cout << "Language: " << get_language() << endl;
+    cout << "\nTimezone: " << getTimezone() << endl;
+    cout << "Language: " << getLanguage() << endl;
 }
 
-string General::get_language() {
-    return language;
+string General::getLanguage() {
+    return m_language;
 }
 
-string General::get_timeZone() {
-    return timeZone;
+string General::getTimezone() {
+    return m_timezone;
 }
 
-void General::set_timeZone(string data) {
-    timeZone = data;
+void General::setTimezone(string data) {
+    m_timezone = data;
 }
 
-void General::set_language(string data1) {
-    language = data1;
+void General::setLanguage(string data1) {
+    m_language = data1;
 }
 bool General::operator > (const General& right)
 {
     bool status;
 
-    if (personal_key > right.personal_key)
+    if (m_personal_key > right.m_personal_key)
         status = true;
     else
         status = false;
@@ -135,7 +145,7 @@ bool General::operator < (const General& right)
 {
     bool status;
 
-    if (personal_key < right.personal_key)
+    if (m_personal_key < right.m_personal_key)
         status = true;
     else
         status = false;
@@ -147,7 +157,7 @@ bool General::operator == (const General& right)
 {
     bool status;
 
-    if (personal_key == right.personal_key)
+    if (m_personal_key == right.m_personal_key)
         status = true;
     else
         status = false;
@@ -157,7 +167,7 @@ bool General::operator == (const General& right)
 
 bool operator==(const General& lhs, const General& rhs) {
     bool status;
-    if (lhs.car_name == rhs.car_name) {
+    if (lhs.m_car_name == rhs.m_car_name) {
         status = true;
     }
     else
@@ -166,7 +176,7 @@ bool operator==(const General& lhs, const General& rhs) {
 }
 bool operator<(const General& lhs, const General& rhs) {
     bool status;
-    if (lhs.car_name < rhs.car_name) {
+    if (lhs.m_car_name < rhs.m_car_name) {
         status = true;
     }
     else
@@ -175,7 +185,7 @@ bool operator<(const General& lhs, const General& rhs) {
 }
 bool operator>(const General& lhs, const General& rhs) {
     bool status;
-    if (lhs.car_name > rhs.car_name) {
+    if (lhs.m_car_name > rhs.m_car_name) {
         status = true;
     }
     else

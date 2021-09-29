@@ -14,7 +14,6 @@
 #include "Sound.h"
 #include "CommonInfo.h"
 #include "list.h"
-
 #include "Setting.h"
 
 using namespace std;
@@ -25,33 +24,39 @@ using namespace std;
 List Vehicle;
 
 
-vector<CommonInfo> timezoneList;
-vector<CommonInfo> languageList;
+vector<CommonInfo> g_timezone_list;
+vector<CommonInfo> g_language_list;
+const char G_NO_SORT = '0';
+const char G_SORT_BY_ID = '1';
+const char G_SORT_BY_NAME = '2';
+void nhapThongTinCaiDat();
+void xuatThongTinCaiDat();
 
-void NhapThongTinCaiDat();
-void XuatThongTinCaiDat();
+void xuatThongTinCaiDat_Sound();
+void choosePrintForm(const string);
+void xuatThongTinCaiDat_General();
+void xuatThongTinCaiDat_Display();
+void xuatTatCaThongTinCaiDat();
 
-void XuatThongTinCaiDat_Sound();
-void XuatThongTinCaiDat_General();
-void XuatThongTinCaiDat_Display();
-void XuatTatCaThongTinCaiDat();
-
-void NhapThongTinCaiDat_Sound();
-void NhapThongTinCaiDat_General();
-void NhapThongTinCaiDat_Display();
+void nhapThongTinCaiDat_Sound();
+void nhapThongTinCaiDat_General();
+void nhapThongTinCaiDat_Display();
 
 void downloadTimeZone();
 void downloadLanguage();
 
-void readfromfileSetting();
-void writetofileSetting();
-int menu();
+void readFromFileSetting();
+void writeToFileSetting();
+
+void menu();
+
+void insertAnotherUser();
 
 void sortTimezone();									//Sap xep Timezone
 void sortLanguage();									//Sap xep Language
-void sort_vector(vector<CommonInfo>& v, int a);
-bool cmpnum(CommonInfo obj1, CommonInfo obj2);
-bool cmpalpha(CommonInfo obj1, CommonInfo obj2);
+void sortVector(vector<CommonInfo>& v, int choose);
+bool cmpByNum(CommonInfo obj1, CommonInfo obj2);
+bool cmpByAlphabet(CommonInfo obj1, CommonInfo obj2);
 
 
 
@@ -61,14 +66,13 @@ int main(int argc, char** argv) {
 	downloadTimeZone();
 
 
-
 	char decision = 'c';								//Tiep tuc nha du lieu cho xe tiep theo hay khong
-	bool flag{ false };									//Flag cho while
+	bool flag_while{ false };									//Flag cho while
 
-	readfromfileSetting();
+	readFromFileSetting();
 
 
-	while (flag != true) {
+	while (flag_while != true) {
 		decision = 'c';
 
 		cout << "There is (are) " << Vehicle.size() << " car(s) in the system." << endl;
@@ -81,22 +85,7 @@ int main(int argc, char** argv) {
 
 			cout << "Car number: " << Vehicle.size() + 1 << endl;
 
-			Setting data;
-
-			data.nhapThongTin();
-
-			Display DIS(data, 1, 1, 1);					//Tao doi tuong cua lop Display ke thua du lieu tu lop Setting
-			Sound SND(data, 1, 1, 1, 1);				//Tao doi tuong cua lop Sound ke thua du lieu tu lop Setting
-			General GEN(data, "(GMT-12:00)", "Mandarin (entire branch)");					//Tao doi tuong cua lop General ke thua du lieu tu lop Setting
-
-
-
-			Car newcar(data, SND, DIS, GEN);
-			Vehicle.insertNode(newcar);
-
-
-
-			
+			insertAnotherUser();						//Doi tuong mac dinh moi  duoc tao ra
 
 		}
 		else {
@@ -105,7 +94,7 @@ int main(int argc, char** argv) {
 				cin.ignore(100, '\n');
 				menu();
 
-				flag = true;
+				flag_while = true;
 			}
 			else {
 				cout << "Unknown selection." << endl;
@@ -123,30 +112,42 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
-int menu() {
-	char a('c');
-	char decision('c');
-	int selection{};										//Chon che do
-	bool flag{ false }, flagadd{ false };										//Flag cho vong lap while
+void insertAnotherUser()
+{
+	Setting data;
+
+	data.nhapThongTin();
+
+	Display DIS(data);					//Tao doi tuong cua lop Display ke thua du lieu tu lop Setting
+	Sound SND(data);				//Tao doi tuong cua lop Sound ke thua du lieu tu lop Setting
+	General GEN(data);					//Tao doi tuong cua lop General ke thua du lieu tu lop Setting
+	Car newcar(data, SND, DIS, GEN);
+	Vehicle.insertNode(newcar);
+}
+
+void menu() {
+	char menu_selection('c');
+	char add_user_decision('c');
+	bool flag_menu{ false }, flag_add_user{ false };		//Flag ket thuc vong lap while
 	Vehicle.updateTreeAVL();
-	while (flag != true) {
+	while (flag_menu != true) {
 		system("cls");
 		cout << "--- SELECT MENU ---\n";
 		cout << "1. Input setting information" << endl;		//Thong tin nhap vao duoc luu tru tam trong vetor
 		cout << "2. Print setting information" << endl;		//Khi chon xuat thong tin thi thong tin se duoc cap nhat vao binary tree
 		cout << "3. Add another vehicle\n";
 		cout << "4. Exit\nYour seclection: ";
-		
-		cin >> a;
+
+		cin >> menu_selection;
 		try {
-			switch (a) {							//Switch-case nhu menu
+			switch (menu_selection) {						//Switch-case nhu menu
 			case '1':
-				NhapThongTinCaiDat();
+				nhapThongTinCaiDat();
 				cin.clear();
 				cin.ignore(100, '\n');
 				break;
 			case '2':
-				XuatThongTinCaiDat();
+				xuatThongTinCaiDat();
 				cin.clear();
 				cin.ignore(100, '\n');
 				break;
@@ -155,43 +156,33 @@ int menu() {
 				cout << "\nGood bye.";
 				cout << endl;
 				system("pause");
-				flag = true;
+				flag_menu = true;
 				break;
 			case '3':
-				while (flagadd != true) {
-					decision = 'c';
+				while (flag_add_user != true) {
+					add_user_decision = 'c';
 
 					cout << "There is (are) " << Vehicle.size() << " car(s) in the system." << endl;
 					cout << "Will you import another user? (y/n) :";//Goi y chon tao doi tuong moi
-					cin >> decision;
-					if (toupper(decision) == 'Y') {
+					cin >> add_user_decision;
+					if (toupper(add_user_decision) == 'Y') {
 
 						cin.ignore(1);
 						system("cls");
 
 						cout << "Car number: " << Vehicle.size() + 1 << endl;
 
-						Setting data;
+						insertAnotherUser();
 
-						data.nhapThongTin();
-
-						Display DIS(data, 1, 1, 1);					//Tao doi tuong cua lop Display ke thua du lieu tu lop Setting
-						Sound SND(data, 1, 1, 1, 1);				//Tao doi tuong cua lop Sound ke thua du lieu tu lop Setting
-						General GEN(data, "(GMT-12:00)", "Mandarin (entire branch)");					//Tao doi tuong cua lop General ke thua du lieu tu lop Setting
-
-
-
-						Car newcar(data, SND, DIS, GEN);
-						Vehicle.insertNode(newcar);
 
 					}
 					else {
-						if (toupper(decision) == 'N') {
+						if (toupper(add_user_decision) == 'N') {
 							cin.clear();
 							cin.ignore(100, '\n');
 							menu();
 
-							flagadd = true;
+							flag_add_user = true;
 						}
 						else {
 							cout << "Unknown selection." << endl;
@@ -203,8 +194,6 @@ int menu() {
 						}
 					}
 				}
-
-
 
 				break;
 			default:
@@ -218,33 +207,32 @@ int menu() {
 			cerr << "Unknown selection!!! Please try again.";
 			continue;
 		}
-	}return selection;
+	}
 }
 
-void NhapThongTinCaiDat() {
-	char choose;										//Chon xe de cai dat thong tin Display/Sound/General
-	char indx[10];
-	bool flag{ false }, flagbis{ false };				//Flag cho while 
+void nhapThongTinCaiDat() {
+	char information_selection;			//Chon xe de cai dat thong tin Display/Sound/General
+	bool menu_flag{ false };			//Flag cho while 
 
 
-	while (flag != true) {
+	while (menu_flag != true) {
 		system("cls");
 		cout << "--- SELECT MENU ---" << endl;
 		cout << "1. Display setting " << endl;
 		cout << "2. Sound setting " << endl;
 		cout << "3. General setting" << endl;
 		cout << "0. Back\nYour selection: ";
-		cin >> choose;
+		cin >> information_selection;
 
 		try {
-			switch (choose) {
+			switch (information_selection) {
 			case '1':																//Nhap thong tin cho Display
 				system("cls");
 				cin.clear();
 				cin.ignore(100, '\n');
 				cout << " --- Ban nhap thong tin Display --- " << endl;			//Xuat thong bao da chon Input Display
 
-				NhapThongTinCaiDat_Display();							//Ham Input Display
+				nhapThongTinCaiDat_Display();							//Ham Input Display
 
 
 				break;
@@ -255,7 +243,7 @@ void NhapThongTinCaiDat() {
 				cin.ignore(100, '\n');
 				cout << " --- Ban nhap thong tin Sound --- " << endl;			//Xuat thong bao da chon Input Sound
 
-				NhapThongTinCaiDat_Sound();								//Ham Input Sound
+				nhapThongTinCaiDat_Sound();								//Ham Input Sound
 
 				break;
 
@@ -264,13 +252,13 @@ void NhapThongTinCaiDat() {
 				cin.ignore(100, '\n');
 				system("cls");
 				cout << " --- Ban nhap thong tin General --- " << endl;
-				NhapThongTinCaiDat_General();
+				nhapThongTinCaiDat_General();
 
 				break;
 			case '0':
 				system("cls");
 
-				flag = true;
+				menu_flag = true;
 				break;
 
 			default:
@@ -289,33 +277,33 @@ void NhapThongTinCaiDat() {
 	}
 }
 
-void NhapThongTinCaiDat_Sound()
+void nhapThongTinCaiDat_Sound()
 {
-	Vehicle.nhap_thong_tin_sound();
+	Vehicle.nhapThongTinSound();
 	system("pause");
 
 }
 
-void NhapThongTinCaiDat_General() {
+void nhapThongTinCaiDat_General() {
 
 
 	sortLanguage();
 	sortTimezone();
-	Vehicle.nhap_thong_tin_general();
+	Vehicle.nhapThongTinGeneral();
 	system("pause");
 }
-void NhapThongTinCaiDat_Display()
+void nhapThongTinCaiDat_Display()
 {
 
-	Vehicle.nhap_thong_tin_display();
+	Vehicle.nhapThongTinDisplay();
 
 
 	system("pause");
 
 }
 
-void XuatThongTinCaiDat() {
-	char selection = 'c';											//Chon che do xuat
+void xuatThongTinCaiDat() {
+	char print_info_selection = 'c';						//Chon che do xuat
 
 	bool flag{ false };
 	while (flag != true) {
@@ -326,36 +314,34 @@ void XuatThongTinCaiDat() {
 		cout << "3. Print General setting information\n";
 		cout << "4. Print all setting information\n";
 		cout << "0. Back\nYour selection: ";
-		cin >> selection;
-
-
-		writetofileSetting();
+		cin >> print_info_selection;
+		writeToFileSetting();
 		system("cls");
 		Vehicle.updateTreeAVL();
-		switch (selection) {
+		switch (print_info_selection) {
 		case '1':
 			cout << "--- Display setting ---\n";
 			cin.clear();
 			cin.ignore(100, '\n');
-			XuatThongTinCaiDat_Display();					//Ham xuat thong tin cai dat Display
+			xuatThongTinCaiDat_Display();					//Ham xuat thong tin cai dat Display
 			break;
 		case '2':
 			cout << "--- Sound setting ---\n";
 			cin.clear();
 			cin.ignore(100, '\n');
-			XuatThongTinCaiDat_Sound();						//Ham xuat thong tin cai dat Sound
+			xuatThongTinCaiDat_Sound();						//Ham xuat thong tin cai dat Sound
 			break;
 		case '3':
 			cout << "--- General setting ---\n";
 			cin.clear();
 			cin.ignore(100, '\n');
-			XuatThongTinCaiDat_General();					//Ham xuat thong tin cai dat General
+			xuatThongTinCaiDat_General();					//Ham xuat thong tin cai dat General
 			break;
 		case '4':
 			cout << "--- All setting ---\n";					//Ham xuat thong tin tat cacai dat 
 			cin.clear();
 			cin.ignore(100, '\n');
-			XuatTatCaThongTinCaiDat();
+			xuatTatCaThongTinCaiDat();
 			break;
 		case '0':													//Ket thuc Ham Xuat Thong Tin Cai Dat
 			system("cls");
@@ -375,64 +361,37 @@ void XuatThongTinCaiDat() {
 }
 
 
-void XuatThongTinCaiDat_Sound() {
-	char choose{};
-	bool flag{ false };
-
-
-	while (flag != true) {
-		system("cls");
-		cout << "Sorting sound data by :\n1. Personal Key\n2. Car Name\n";
-		cout << "Your choice: ";
-		cin >> choose;
-
-		if (choose == '1') {
-			Vehicle.BST_by_ID();
-			cin.clear();
-			cin.ignore(100, '\n');
-			flag = true;
-		}
-		else if (choose == '2') {
-			Vehicle.BST_by_name();
-			cin.clear();
-			cin.ignore(100, '\n');
-			flag = true;
-		}
-		else {
-			cout << "Illegal choice, please try again.\n";
-			cin.clear();
-			cin.ignore(100, '\n');
-			system("pause");
-			continue;
-
-		}
-	}
+void xuatThongTinCaiDat_Sound() {
+	const string kind_info = "Sound";
+	choosePrintForm(kind_info);
 	cout << endl;
 	cout << setw(20) << left << "Owner name" << setw(25) << left << "Email" << setw(20) << left << "Key number" << setw(20) << left << "ODO number" << setw(20) << left << "Remind service" << setw(20) << left << "Media" << setw(20) << left << "Call" << setw(20) << left << "Navigation" << setw(20) << left << "Notification" << endl;							//Format String
-	Vehicle.xuat_thong_tin_sound();
+	Vehicle.xuatThongTinSound();
 	system("pause");
 }
 
+void choosePrintForm(const string kind_info)
+{
+	char form_choice{};
+	bool choose_form_flag{ false };
 
-void XuatThongTinCaiDat_General() {
-	bool flag{ false };
-	char choose('c');
-	while (flag != true) {
+	while (choose_form_flag != true) {
 		system("cls");
-		cout << "Sorting general data by :\n1. Personal Key\n2. Car Name\n";
-		cout << "Your choice";
-		cin >> choose;
-		if (choose == '1') {
-			Vehicle.BST_by_ID();
+		cout << "Sorting "<<kind_info <<" data by :\n1. Personal Key\n2. Car Name\n";
+		cout << "Your choice: ";
+		cin >> form_choice;
+
+		if (form_choice == G_SORT_BY_ID) {
+			Vehicle.BSTByID();
 			cin.clear();
 			cin.ignore(100, '\n');
-			flag = true;
+			choose_form_flag = true;
 		}
-		else if (choose == '2') {
-			Vehicle.BST_by_name();
+		else if (form_choice == G_SORT_BY_NAME) {
+			Vehicle.BSTByName();
 			cin.clear();
 			cin.ignore(100, '\n');
-			flag = true;
+			choose_form_flag = true;
 		}
 		else {
 			cout << "Illegal choice, please try again.\n";
@@ -443,146 +402,88 @@ void XuatThongTinCaiDat_General() {
 
 		}
 	}
+}
+
+
+void xuatThongTinCaiDat_General() {
+	const string kind_info = "General";
+	choosePrintForm(kind_info);
 	cout << endl;
 	cout << setw(20) << left << "Owner name" << setw(25) << left << "Email" << setw(20) << left << "Key number" << setw(20) << left << "ODO number" << setw(20) << left << "Remind service" << setw(15) << left << "TimeZone" << setw(30) << left << "Language" << endl;
-	Vehicle.xuat_thong_tin_general();
+	Vehicle.xuatThongTinGeneral();
 	system("pause");
 }
 
-void XuatThongTinCaiDat_Display() {
-	bool flag{ false };
-	char choose('c');
-
-	while (flag != true) {
-		system("cls");
-		cout << "Sorting display data by :\n1. Personal Key\n2. Car Name\n";
-		cout << "Your choice: ";
-		cin >> choose;
-		if (choose == '1') {
-			Vehicle.BST_by_ID();
-			cin.clear();
-			cin.ignore(100, '\n');
-			flag = true;
-		}
-		else if (choose == '2') {
-			Vehicle.BST_by_name();
-			cin.clear();
-			cin.ignore(100, '\n');
-			flag = true;
-		}
-		else {
-			cout << "Illegal choice, please try again.\n";
-			cin.clear();
-			cin.ignore(100, '\n');
-			system("pause");
-			continue;
-
-		}
-	}
+void xuatThongTinCaiDat_Display() {
+	const string kind_info = "Display";
+	choosePrintForm(kind_info);
 	cout << endl;
 	cout << setw(20) << left << "Owner name" << setw(25) << left << "Email" << setw(20) << left << "Key number" << setw(20) << left << "ODO number" << setw(20) << left << "Remind service" << setw(20) << left << "Light level" << setw(20) << left << "Taplo light level" << setw(20) << left << "Screen light level" << endl;
 
-	Vehicle.xuat_thong_tin_display();
+	Vehicle.xuatThongTinDisplay();
 	system("pause");
 }
 
-void XuatTatCaThongTinCaiDat() {
-	char c = 'c';
-
-	string indx;
-	bool flagys{ false }, coinsisive{ false };
-	size_t i = 0;
-	bool flag{ false };
-	char choose('c');
+void xuatTatCaThongTinCaiDat() {
+	char update_confirm = 'c';
+	string user_id;
+	bool update_user_flag{ false };
+	
 	cout << endl << endl;
-	while (flag != true) {
-		system("cls");
-		cout << "Sorting all data by :\n1. Personal Key\n2. Car Name\nYour choice: ";
-		cin >> choose;
-		if (choose == '1') {
-			Vehicle.BST_by_ID();
-			cin.clear();
-			cin.ignore(100, '\n');
-			flag = true;
-		}
-		else if (choose == '2') {
-			Vehicle.BST_by_name();
-			cin.clear();
-			cin.ignore(100, '\n');
-			flag = true;
-		}
-		else {
-			cout << "Illegal choice, please try again.\n";
-			cin.clear();
-			cin.ignore(100, '\n');
-			system("pause");
-
-
-		}
-	}
-
-	writetofileSetting();
+	const string kind_info = "All";
+	choosePrintForm(kind_info);
+	writeToFileSetting();
 	cout << endl;
+	Vehicle.xuatThongTinTatCa();
+	
+	//Sau khi xuat tat ca thong tin tren he thong, hoi nguoi dung co muon update mot user nao do khong
 
-	Vehicle.xuat_thong_tin_tat_ca();
-
-	while (flagys != true) {
-		coinsisive = false;
-		flagys = false;
+	while (update_user_flag != true) {
+		update_user_flag = false;
 		cout << "\nWould you like to update user data? [yes/no]" << endl;
 
-		cin >> c;
-		if (toupper(c) == 'Y') {
+		cin >> update_confirm;
+		if (toupper(update_confirm) == 'Y') {
 			cin.clear();
 			cin.ignore(100, '\n');
 			cout << "Which car (input Key Number): ";
-			cin >> indx;
-			if (Vehicle.searchNodebyID(indx)) {
-				Vehicle.updateData(indx);
-
-
-
+			cin >> user_id;
+			if (Vehicle.searchNodeByID(user_id)) {
+				Vehicle.updateData(user_id);
 			}
 			else {
 				cout << "\nIllegal choice. Could you try again?";
 				cin.clear();
 				cin.ignore(100, '\n');
 			}
-
-
 		}
-		if (toupper(c) == 'N') {
-
+		if (toupper(update_confirm) == 'N') {
 			cin.clear();
 			cin.ignore(100, '\n');
-			flagys = true;
+			update_user_flag = true;
 		}
 		else {
 			cin.clear();
 			cin.ignore(100, '\n');
 		}
-
-
 	}
 	system("pause");
 }
 
-
 void downloadTimeZone() {
-	ifstream f;													//Doi tuong cua ifstream de mo file	
-	CommonInfo obj[32];											//Mang  doi tuong
-	f.open("timezones.txt");									//Lenh mo file
-	if (!f) {													//Neu mo khong thanh cong
+	ifstream ifs_timezone;									//Doi tuong cua ifstream de mo file	
+	CommonInfo timezone_objs[32];											//Mang  doi tuong
+	ifs_timezone.open("timezones.txt");									//Lenh mo file
+	if (!ifs_timezone) {													//Neu mo khong thanh cong
 		cerr << "Can't open timezones.txt file!" << endl;
 		return;
-
 	}
 	else {
 		try {													//Exception Handle neu khong doc thanh cong file
 			for (int i = 0; i < 32; i++) {						//Neu doc duoc 
 				cout << flush;									//Vi input la string nen xoa bo nho dem
-				obj[i].doc(f);									//Ham Friend doc duoc dinh nghia trong Class CommonInfo
-				timezoneList.push_back(obj[i]);					//Them vao vector
+				timezone_objs[i].doc(ifs_timezone);									//Ham Friend doc duoc dinh nghia trong Class CommonInfo
+				g_timezone_list.push_back(timezone_objs[i]);					//Them vao vector
 
 			}
 			cout << "The TimeZoneList download process is successfull.\n";
@@ -593,15 +494,15 @@ void downloadTimeZone() {
 			return;
 		}
 	}
-	f.close();
+	ifs_timezone.close();
 }
 
 
 void downloadLanguage() {
-	ifstream f;													//Doi tuong cua ifstream de mo file	
-	CommonInfo objl[30];										//Mang  doi tuong
-	f.open("languages.txt");									//Lenh mo file
-	if (f.fail()) {												//Neu mo khong thanh cong
+	ifstream ifs_language;													//Doi tuong cua ifstream de mo file	
+	CommonInfo language_objs[30];										//Mang  doi tuong
+	ifs_language.open("languages.txt");									//Lenh mo file
+	if (ifs_language.fail()) {												//Neu mo khong thanh cong
 		cerr << "Can't open the languages.txt file!";
 		return;
 
@@ -610,8 +511,8 @@ void downloadLanguage() {
 		try {													//Exception Handle neu khong doc thanh cong file
 			for (int i = 0; i < 30; i++) {						//Neu doc duoc 
 				cout << flush;									//Vi input la string nen xoa bo nho dem
-				objl[i].doc(f);
-				languageList.push_back(objl[i]);				//Them vao vector
+				language_objs[i].doc(ifs_language);
+				g_language_list.push_back(language_objs[i]);				//Them vao vector
 			}
 			cout << "The LanguageList download process is successfull.\n";
 		}
@@ -620,123 +521,107 @@ void downloadLanguage() {
 			return;
 		}
 	}
-	f.close();
+	ifs_language.close();
 }
 
-void readfromfileSetting() {
-	ifstream f;
+void readFromFileSetting() {
+	ifstream ifs_setting;
 	string begin_word;
-	string string_word, string_num;
-	int num{};
-	f.open("Setting.txt", ios::in);
-	if (f.fail()) {
+	string string_word, parameter_in_string;
+	int parameter{};
+	ifs_setting.open("Setting.txt", ios::in);
+	if (ifs_setting.fail()) {
 		cerr << "Can't open the Setting.txt file to read!";
 		return;
 	}
 	else {
 		try {
 
-			f.seekg(0, ios::end);
-			size_t size = f.tellg();
+			ifs_setting.seekg(0, ios::end);
+			size_t size = ifs_setting.tellg();
 			if (size == 0) {
 				cout << "Ready to write on file.";
 				system("cls");
-
-				cout << "Car number: " << 1  << endl;
-
-				Setting data;
-
-				data.nhapThongTin();
-
-				Display DIS(data, 1, 1, 1);					//Tao doi tuong cua lop Display ke thua du lieu tu lop Setting
-				Sound SND(data, 1, 1, 1, 1);				//Tao doi tuong cua lop Sound ke thua du lieu tu lop Setting
-				General GEN(data, "(GMT-12:00)", "Mandarin (entire branch)");					//Tao doi tuong cua lop General ke thua du lieu tu lop Setting				
-
-
-
-				Car newcar(data, SND, DIS, GEN);
-				Vehicle.insertNode(newcar);//Them cac doi tuong vao binary tree them vao DATA_b de kiem tra
-
-				
-
+				cout << "Car number: " << 1 << endl;
+				insertAnotherUser();	
 			}
 			else {
-				f.seekg(0);
-				while (!f.eof()) {
+				ifs_setting.seekg(0);
+				while (!ifs_setting.eof()) {
 					Setting data;
 
-					f >> begin_word;
-					f.seekg(3, 1);
-					getline(f, string_word, '/');
+					ifs_setting >> begin_word;
+					ifs_setting.seekg(3, 1);
+					getline(ifs_setting, string_word, '/');
 					data.setCarName(string_word);
 
-					getline(f, string_word, '/');
+					getline(ifs_setting, string_word, '/');
 					data.setEmail(string_word);
 
-					getline(f, string_word, '/');
+					getline(ifs_setting, string_word, '/');
 					data.setPersonalKey(string_word);
 
-					getline(f, string_num, '/');
-					num = stoi(string_num);
-					data.setODO(num);
+					getline(ifs_setting, parameter_in_string, '/');
+					parameter = stoi(parameter_in_string);
+					data.setODO(parameter);
 
-					getline(f, string_num, 'S');
-					num = stoi(string_num);
+					getline(ifs_setting, parameter_in_string, 'S');
+					parameter = stoi(parameter_in_string);
 
-					data.setServiceRemind(num);
+					data.setServiceRemind(parameter);
 
 
-					getline(f, begin_word, ':');
-					f.seekg(4, 1);
+					getline(ifs_setting, begin_word, ':');
+					ifs_setting.seekg(4, 1);
 
 					Sound SND(data, 0, 0, 0, 0);
 
-					getline(f, string_num, '/');
-					num = stoi(string_num);
-					SND.set_media_level(num);
+					getline(ifs_setting, parameter_in_string, '/');
+					parameter = stoi(parameter_in_string);
+					SND.setMediaLevel(parameter);
 
-					getline(f, string_num, '/');
-					num = stoi(string_num);
-					SND.set_call_level(num);
+					getline(ifs_setting, parameter_in_string, '/');
+					parameter = stoi(parameter_in_string);
+					SND.setCallLevel(parameter);
 
-					getline(f, string_num, '/');
-					num = stoi(string_num);
-					SND.set_navi_level(num);
+					getline(ifs_setting, parameter_in_string, '/');
+					parameter = stoi(parameter_in_string);
+					SND.setNaviLevel(parameter);
 
-					getline(f, string_num, 'D');
-					num = stoi(string_num);
-					SND.set_notification_level(num);
+					getline(ifs_setting, parameter_in_string, 'D');
+					parameter = stoi(parameter_in_string);
+					SND.setNotificationLevel(parameter);
 
 					Display DIS(data, 0, 0, 0);
 
-					getline(f, begin_word, ':');
-					f.seekg(2, 1);
+					getline(ifs_setting, begin_word, ':');
+					ifs_setting.seekg(2, 1);
 
-					getline(f, string_num, '/');
-					num = stoi(string_num);
-					DIS.set_light_level(num);
+					getline(ifs_setting, parameter_in_string, '/');
+					parameter = stoi(parameter_in_string);
+					DIS.setLightLevel(parameter);
 
-					getline(f, string_num, '/');
-					num = stoi(string_num);
-					DIS.set_screen_light_level(num);
+					getline(ifs_setting, parameter_in_string, '/');
+					parameter = stoi(parameter_in_string);
+					DIS.setScreenLightLevel(parameter);
 
-					getline(f, string_num, 'G');
-					num = stoi(string_num);
-					DIS.set_taplo_light_level(num);
+					getline(ifs_setting, parameter_in_string, 'G');
+					parameter = stoi(parameter_in_string);
+					DIS.setTaploLightLevel(parameter);
 
 
 					General GEN(data, "", "");
 
 
 
-					getline(f, begin_word, ':');
-					f.seekg(2, 1);
-					getline(f, string_word, '/');
-					GEN.set_timeZone(string_word);
+					getline(ifs_setting, begin_word, ':');
+					ifs_setting.seekg(2, 1);
+					getline(ifs_setting, string_word, '/');
+					GEN.setTimezone(string_word);
 
-					getline(f, string_word);
-					GEN.set_language(string_word);
-					f.ignore(1);
+					getline(ifs_setting, string_word);
+					GEN.setLanguage(string_word);
+					ifs_setting.ignore(1);
 					Car newCar(data, SND, DIS, GEN);
 					Vehicle.insertNode(newCar);							//Them cac doi tuong vao binary tree them vao DATA_b de kiem tra
 
@@ -751,42 +636,43 @@ void readfromfileSetting() {
 			return;
 		}
 	}
-	f.close();
+	ifs_setting.close();
 }
-void writetofileSetting() {
+void writeToFileSetting() {			
 	Vehicle.writetofileSetting();
 
 }
 void sortTimezone() {
-	char a('c');
-	bool flag = false;
+	const int C_SORT_BY_INDEX = 1;
+	const int C_SORT_BY_NAME = 2;
+	
+	char sort_form_choice('c');
+	bool sort_decision_flag = false;
 	cout << "\nSorting Timezone list by:";
 	cout << "\n1. Index\n2. Alphabet\n0. Leave it alone.\n";
 
-	while (flag != true) {
-		flag = false;
+	while (sort_decision_flag != true) {
+		sort_decision_flag = false;
 		cout << "Your choice: ";
-		cin >> a;
-		switch (a) {
-		case '0':
+		cin >> sort_form_choice;
+		switch (sort_form_choice) {
+		case G_NO_SORT:
 			cout << "\nNo change in your list.\n";
-			flag = true;
+			sort_decision_flag = true;
 			break;
-		case '1':
+		case G_SORT_BY_ID:
 			cout << "\nTimezone list was sorted by GMT Index.\n";
-			sort_vector(timezoneList, 1);
-			flag = true;
+			sortVector(g_timezone_list, C_SORT_BY_INDEX);
+			sort_decision_flag = true;
 			break;
-		case '2':
+		case G_SORT_BY_NAME:
 			cout << "Timezone list was sorted by Alphabet.\n";
-			sort_vector(timezoneList, 2);
-
-			flag = true;
+			sortVector(g_timezone_list, C_SORT_BY_NAME);
+			sort_decision_flag = true;
 			break;
 
 		default:
 			cout << "Illegal input, please try again." << endl;
-
 			break;
 		}
 	}
@@ -794,31 +680,34 @@ void sortTimezone() {
 }
 
 void sortLanguage() {
-	char a('c');
-	bool flag = false;
+	const int C_SORT_BY_INDEX = 1;
+	const int C_SORT_BY_NAME = 2;
+
+	char sort_form_choice('c');
+	bool sort_decision_flag = false;
 	cout << "\nSorting Language list by:";
 	cout << "\n1. Index\n2. Alphabet\n0. Leave it alone.\n";
-	while (flag != true) {
-		flag = false;
+	while (sort_decision_flag != true) {
+		sort_decision_flag = false;
 		cout << "Your choice: ";
-		cin >> a;
-		switch (a) {
+		cin >> sort_form_choice;
+		switch (sort_form_choice) {
 
 		case '0':
 			cout << "\nNo change in your list.\n";
 
-			flag = true;
+			sort_decision_flag = true;
 			break;
 		case '2':
 			cout << "Language list was sorted by Alphabet.\n";
-			sort_vector(languageList, 2);
+			sortVector(g_language_list, C_SORT_BY_NAME);
 
-			flag = true;
+			sort_decision_flag = true;
 			break;
 		case '1':
 			cout << "Language list was sorted by Index.\n";
-			sort_vector(languageList, 1);
-			flag = true;
+			sortVector(g_language_list, C_SORT_BY_NAME);
+			sort_decision_flag = true;
 			break;
 		default:
 			cout << "Illegal input, please try again." << endl;
@@ -831,31 +720,27 @@ void sortLanguage() {
 
 
 
-void sort_vector(vector<CommonInfo>& v, int a) {
+void sortVector(vector<CommonInfo>& v, int choose) {
 	// a=1: sortbyNumber
 	// a=2: sortbyName
 
-
-
-
-	switch (a) {
+	switch (choose) {
 
 	case 1:
-		sort(v.begin(), v.end(), cmpnum);
+		sort(v.begin(), v.end(), cmpByNum);
 		break;
 
 	case 2:
-		sort(v.begin(), v.end(), cmpalpha);
+		sort(v.begin(), v.end(), cmpByAlphabet);
 		break;
 	}
 }
 
-bool cmpalpha(CommonInfo obj1, CommonInfo obj2)
-{
+bool cmpByAlphabet(CommonInfo obj1, CommonInfo obj2){
 	return operator<(obj1, obj2);
 }
 
-bool cmpnum(CommonInfo obj1, CommonInfo obj2) {
+bool cmpByNum(CommonInfo obj1, CommonInfo obj2) {
 
 	return obj1 < obj2;
 }
