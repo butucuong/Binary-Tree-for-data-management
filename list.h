@@ -94,6 +94,7 @@ public:
 	void xuatThongTinDisplay();
 	void xuatThongTinSound();
 	void xuatThongTinGeneral();
-
+	void insertAnotherUser();
 	void writetofileSetting();
+	void readfromfileSetting();
 };

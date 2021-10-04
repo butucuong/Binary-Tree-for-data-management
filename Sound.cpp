@@ -3,13 +3,14 @@
 Sound::Sound() : Setting() {
 	m_navi_level = m_media_level = m_call_level = m_notification_level = 0;
 }
-Sound::Sound(Setting h, int media, int call, int navi, int noti) : Setting(h)
-{ //Copy constructor for inheritance
-	m_media_level = media;
-	m_call_level = call;
-	m_navi_level = navi;
-	m_notification_level = noti;
-}
+//Sound::Sound(Setting h, int media, int call, int navi, int noti) : Setting(h)
+//{ //Copy constructor for inheritance
+//	m_media_level = media;
+//	m_call_level = call;
+//	m_navi_level = navi;
+//	m_notification_level = noti;
+//}
+
 
 Sound::Sound(Setting h)
 	:Setting(h)
@@ -20,19 +21,14 @@ Sound::Sound(Setting h)
 	const int C_DEFAULT_NAVI_LEVEL = 1;
 	const int C_DEFAULT_NOTIF_LEVEL = 1;
 
-	m_media_level =C_DEFAULT_MEDIA_LEVEL;
-	m_call_level =C_DEFAULT_CALL_LEVEL;
+	m_media_level = C_DEFAULT_MEDIA_LEVEL;
+	m_call_level = C_DEFAULT_CALL_LEVEL;
 	m_navi_level = C_DEFAULT_NAVI_LEVEL;
 	m_notification_level = C_DEFAULT_NOTIF_LEVEL;
 
 }
 
-Sound::Sound(const Sound& h) :Setting(h) {
-	this->m_call_level = h.m_call_level;
-	this->m_navi_level = h.m_navi_level;
-	this->m_notification_level = h.m_notification_level;
-	this->m_media_level = h.m_media_level;
-
+Sound::Sound(const Sound& h) :Setting(h), m_call_level(h.m_call_level), m_navi_level(h.m_navi_level), m_notification_level(h.m_notification_level), m_media_level(h.m_media_level) {
 }
 Sound& Sound:: operator =(Sound& m) {
 	if (this == &m) return *this;
@@ -88,6 +84,18 @@ void Sound::xuatThongTin() {
 	cout << "Notification volume level: " << getNotificationLevel(); cout << endl;
 
 }
+
+unique_ptr<Sound> Sound::clone()
+{
+	return make_unique<Sound>(*this);
+}
+
+unique_ptr<Sound> Sound::create()
+{
+	return make_unique<Sound>();
+}
+
+
 
 int Sound::getMediaLevel() {
 	return m_media_level;

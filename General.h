@@ -13,13 +13,14 @@ public:
 	
 	General();
 	General(const General& h);							//Copy method
-	General(Setting h, string time, string ngonngu);//Copy constructor
+	//General(Setting h, string time, string ngonngu);//Copy constructor
 	General(Setting h);								//Paratemersize constructor 
 	General& operator = (General& m);				//Assign operator
 	~General();										//Destructor		
 	void nhapThongTin();							//virtual method from base class
 	void xuatThongTin();							//virtual method from base class		
-	
+	unique_ptr<General> clone();
+	unique_ptr<General> create();
 	//Getter
 	string getLanguage();
 	string getTimezone();

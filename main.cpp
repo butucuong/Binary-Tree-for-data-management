@@ -9,12 +9,14 @@
 #include <regex>
 #include <numeric>
 
+#include "Setting.h"
 #include "General.h"
 #include "Display.h"
 #include "Sound.h"
 #include "CommonInfo.h"
 #include "list.h"
-#include "Setting.h"
+
+#include "Car.h"
 
 using namespace std;
 
@@ -29,6 +31,7 @@ vector<CommonInfo> g_language_list;
 const char G_NO_SORT = '0';
 const char G_SORT_BY_ID = '1';
 const char G_SORT_BY_NAME = '2';
+
 void nhapThongTinCaiDat();
 void xuatThongTinCaiDat();
 
@@ -50,11 +53,11 @@ void writeToFileSetting();
 
 void menu();
 
-void insertAnotherUser();
+
 
 void sortTimezone();									//Sap xep Timezone
 void sortLanguage();									//Sap xep Language
-void sortVector(vector<CommonInfo>& v, int choose);
+void sortVector(vector<CommonInfo>& v, char choose);
 bool cmpByNum(CommonInfo obj1, CommonInfo obj2);
 bool cmpByAlphabet(CommonInfo obj1, CommonInfo obj2);
 
@@ -85,7 +88,7 @@ int main(int argc, char** argv) {
 
 			cout << "Car number: " << Vehicle.size() + 1 << endl;
 
-			insertAnotherUser();						//Doi tuong mac dinh moi  duoc tao ra
+			Vehicle.insertAnotherUser();						//Doi tuong mac dinh moi  duoc tao ra
 
 		}
 		else {
@@ -112,18 +115,6 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
-void insertAnotherUser()
-{
-	Setting data;
-
-	data.nhapThongTin();
-
-	Display DIS(data);					//Tao doi tuong cua lop Display ke thua du lieu tu lop Setting
-	Sound SND(data);				//Tao doi tuong cua lop Sound ke thua du lieu tu lop Setting
-	General GEN(data);					//Tao doi tuong cua lop General ke thua du lieu tu lop Setting
-	Car newcar(data, SND, DIS, GEN);
-	Vehicle.insertNode(newcar);
-}
 
 void menu() {
 	char menu_selection('c');
@@ -172,7 +163,7 @@ void menu() {
 
 						cout << "Car number: " << Vehicle.size() + 1 << endl;
 
-						insertAnotherUser();
+						Vehicle.insertAnotherUser();
 
 
 					}
@@ -213,9 +204,12 @@ void menu() {
 void nhapThongTinCaiDat() {
 	char information_selection;			//Chon xe de cai dat thong tin Display/Sound/General
 	bool menu_flag{ false };			//Flag cho while 
-
-
+	const char C_DISPLAY_INPUT = '1';
+	const char C_SOUND_INPUT = '2';
+	const char C_GENERAL_INPUT = '3';
+	const char C_BACK = '0';
 	while (menu_flag != true) {
+		writeToFileSetting();
 		system("cls");
 		cout << "--- SELECT MENU ---" << endl;
 		cout << "1. Display setting " << endl;
@@ -226,7 +220,7 @@ void nhapThongTinCaiDat() {
 
 		try {
 			switch (information_selection) {
-			case '1':																//Nhap thong tin cho Display
+			case C_DISPLAY_INPUT:																//Nhap thong tin cho Display
 				system("cls");
 				cin.clear();
 				cin.ignore(100, '\n');
@@ -237,7 +231,7 @@ void nhapThongTinCaiDat() {
 
 				break;
 
-			case '2':
+			case C_SOUND_INPUT:
 				system("cls");
 				cin.clear();
 				cin.ignore(100, '\n');
@@ -247,7 +241,7 @@ void nhapThongTinCaiDat() {
 
 				break;
 
-			case '3':
+			case C_GENERAL_INPUT:
 				cin.clear();
 				cin.ignore(100, '\n');
 				system("cls");
@@ -255,7 +249,7 @@ void nhapThongTinCaiDat() {
 				nhapThongTinCaiDat_General();
 
 				break;
-			case '0':
+			case C_BACK:
 				system("cls");
 
 				menu_flag = true;
@@ -279,6 +273,7 @@ void nhapThongTinCaiDat() {
 
 void nhapThongTinCaiDat_Sound()
 {
+	
 	Vehicle.nhapThongTinSound();
 	system("pause");
 
@@ -524,123 +519,13 @@ void downloadLanguage() {
 	ifs_language.close();
 }
 
-void readFromFileSetting() {
-	ifstream ifs_setting;
-	string begin_word;
-	string string_word, parameter_in_string;
-	int parameter{};
-	ifs_setting.open("Setting.txt", ios::in);
-	if (ifs_setting.fail()) {
-		cerr << "Can't open the Setting.txt file to read!";
-		return;
-	}
-	else {
-		try {
 
-			ifs_setting.seekg(0, ios::end);
-			size_t size = ifs_setting.tellg();
-			if (size == 0) {
-				cout << "Ready to write on file.";
-				system("cls");
-				cout << "Car number: " << 1 << endl;
-				insertAnotherUser();	
-			}
-			else {
-				ifs_setting.seekg(0);
-				while (!ifs_setting.eof()) {
-					Setting data;
-
-					ifs_setting >> begin_word;
-					ifs_setting.seekg(3, 1);
-					getline(ifs_setting, string_word, '/');
-					data.setCarName(string_word);
-
-					getline(ifs_setting, string_word, '/');
-					data.setEmail(string_word);
-
-					getline(ifs_setting, string_word, '/');
-					data.setPersonalKey(string_word);
-
-					getline(ifs_setting, parameter_in_string, '/');
-					parameter = stoi(parameter_in_string);
-					data.setODO(parameter);
-
-					getline(ifs_setting, parameter_in_string, 'S');
-					parameter = stoi(parameter_in_string);
-
-					data.setServiceRemind(parameter);
-
-
-					getline(ifs_setting, begin_word, ':');
-					ifs_setting.seekg(4, 1);
-
-					Sound SND(data, 0, 0, 0, 0);
-
-					getline(ifs_setting, parameter_in_string, '/');
-					parameter = stoi(parameter_in_string);
-					SND.setMediaLevel(parameter);
-
-					getline(ifs_setting, parameter_in_string, '/');
-					parameter = stoi(parameter_in_string);
-					SND.setCallLevel(parameter);
-
-					getline(ifs_setting, parameter_in_string, '/');
-					parameter = stoi(parameter_in_string);
-					SND.setNaviLevel(parameter);
-
-					getline(ifs_setting, parameter_in_string, 'D');
-					parameter = stoi(parameter_in_string);
-					SND.setNotificationLevel(parameter);
-
-					Display DIS(data, 0, 0, 0);
-
-					getline(ifs_setting, begin_word, ':');
-					ifs_setting.seekg(2, 1);
-
-					getline(ifs_setting, parameter_in_string, '/');
-					parameter = stoi(parameter_in_string);
-					DIS.setLightLevel(parameter);
-
-					getline(ifs_setting, parameter_in_string, '/');
-					parameter = stoi(parameter_in_string);
-					DIS.setScreenLightLevel(parameter);
-
-					getline(ifs_setting, parameter_in_string, 'G');
-					parameter = stoi(parameter_in_string);
-					DIS.setTaploLightLevel(parameter);
-
-
-					General GEN(data, "", "");
-
-
-
-					getline(ifs_setting, begin_word, ':');
-					ifs_setting.seekg(2, 1);
-					getline(ifs_setting, string_word, '/');
-					GEN.setTimezone(string_word);
-
-					getline(ifs_setting, string_word);
-					GEN.setLanguage(string_word);
-					ifs_setting.ignore(1);
-					Car newCar(data, SND, DIS, GEN);
-					Vehicle.insertNode(newCar);							//Them cac doi tuong vao binary tree them vao DATA_b de kiem tra
-
-				}
-
-			}
-			return;
-		}
-		catch (...) {
-			cerr << "Can't read the Setting.txt file.";
-			system("pause");
-			return;
-		}
-	}
-	ifs_setting.close();
-}
 void writeToFileSetting() {			
 	Vehicle.writetofileSetting();
 
+}
+void readFromFileSetting() {
+	Vehicle.readfromfileSetting();
 }
 void sortTimezone() {
 	const int C_SORT_BY_INDEX = 1;
@@ -700,13 +585,13 @@ void sortLanguage() {
 			break;
 		case '2':
 			cout << "Language list was sorted by Alphabet.\n";
-			sortVector(g_language_list, C_SORT_BY_NAME);
+			sortVector(g_language_list, G_SORT_BY_NAME);
 
 			sort_decision_flag = true;
 			break;
 		case '1':
 			cout << "Language list was sorted by Index.\n";
-			sortVector(g_language_list, C_SORT_BY_NAME);
+			sortVector(g_language_list, G_SORT_BY_ID);
 			sort_decision_flag = true;
 			break;
 		default:
@@ -720,17 +605,17 @@ void sortLanguage() {
 
 
 
-void sortVector(vector<CommonInfo>& v, int choose) {
+void sortVector(vector<CommonInfo>& v, char choose) {
 	// a=1: sortbyNumber
 	// a=2: sortbyName
 
 	switch (choose) {
 
-	case 1:
+	case G_SORT_BY_ID:
 		sort(v.begin(), v.end(), cmpByNum);
 		break;
 
-	case 2:
+	case G_SORT_BY_NAME:
 		sort(v.begin(), v.end(), cmpByAlphabet);
 		break;
 	}

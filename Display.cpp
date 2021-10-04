@@ -4,12 +4,12 @@ Display::Display() : Setting()
 {
 	m_light_level = m_screen_light_level = m_taplo_light_level = 0;
 }
-Display::Display(Setting h, int n1, int n2, int n3) : Setting(h)	//Copy constructor for inheritance
-{
-	m_light_level = n1;
-	m_screen_light_level = n2;
-	m_taplo_light_level = n3;
-}
+//Display::Display(Setting h, int n1, int n2, int n3) : Setting(h)	//Copy constructor for inheritance
+//{
+//	m_light_level = n1;
+//	m_screen_light_level = n2;
+//	m_taplo_light_level = n3;
+//}
 
 Display::Display(Setting h)
 	:Setting(h)
@@ -23,10 +23,9 @@ Display::Display(Setting h)
 
 }
 
-Display::Display(const Display& h) :Setting(h) {						//Copy method
-	this->m_light_level = h.m_light_level;
-	this->m_screen_light_level = h.m_screen_light_level;
-	this->m_taplo_light_level = h.m_taplo_light_level;
+Display::Display(const Display& h) :Setting(h), m_light_level(h.m_light_level), m_screen_light_level(h.m_screen_light_level), m_taplo_light_level(h.m_taplo_light_level)
+{
+	//Copy method
 }
 Display& Display:: operator =(Display& m) {						//Assign operator
 	if (this == &m) return *this;
@@ -49,6 +48,16 @@ int Display::getScreenLightLevel() {
 
 int Display::getTaploLightLevel() {
 	return m_taplo_light_level;
+}
+
+unique_ptr<Display> Display::clone()
+{
+	return make_unique<Display>(*this);
+}
+
+unique_ptr<Display> Display::create()
+{
+	return make_unique<Display>();
 }
 
 void Display::setLightLevel(int lightlv) {

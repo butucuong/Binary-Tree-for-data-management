@@ -1,4 +1,6 @@
 #pragma once
+#include <regex>
+#include <memory>
 #include "Setting.h"
 #include "Sound.h"
 #include "Display.h"
@@ -7,19 +9,24 @@ class Car:public Setting
 {
 private:
 
+	
+
+
 public:
-	Sound l_sound;
-	Display l_display;
-	General l_general;
+	
+	Sound m_sound_concrete;
+	Display m_display_concrete;
+	General m_general_concrete;
 
 	Car();
 	Car(Setting h,Sound &snd, Display &dis, General &gen);
 	Car(const Car&);
-
-	Car& operator=( Car& h);
 	
+	Car& operator=( Car& h);
+	void nhapThongTin();
 	
 	void xuatThongTin();							 //Xuat tat ca thong tin cai dat
+
 	void xuatThongTinDisplay();						
 	void xuatThongTinSound();
 	void xuatThongTinGeneral();

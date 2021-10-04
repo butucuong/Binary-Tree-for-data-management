@@ -133,10 +133,15 @@ void List::insert_by_name(TreeNode*& NodePtr, TreeNode*& newNode)
 		insert_by_name(NodePtr->right, newNode);
 	}
 }
-
+void List::insertAnotherUser() {
+	Car new_user;
+	new_user.nhapThongTin();
+	insertNode(new_user);
+}
 
 void List::insertNode(Car item)
 {
+
 	if (searchNode(item)) {
 		cout << "\n**Duplicate Information**\n";
 		return;
@@ -309,29 +314,14 @@ void List::updateData(string a, TreeNode*& NodePtr) {
 			Setting updateCar;
 			cin.ignore(1);
 			updateCar.nhapThongTin();
-			NodePtr->value.l_display.setCarName(updateCar.getCarName());
-			NodePtr->value.l_display.setPersonalKey(updateCar.getPersonalKey());
-			NodePtr->value.l_display.setServiceRemind(updateCar.getServiceRemind());
-			NodePtr->value.l_display.setEmail(updateCar.getEmail());
-			NodePtr->value.l_display.setODO(updateCar.getODO());
-
-			NodePtr->value.l_sound.setCarName(updateCar.getCarName());
-			NodePtr->value.l_sound.setPersonalKey(updateCar.getPersonalKey());
-			NodePtr->value.l_sound.setServiceRemind(updateCar.getServiceRemind());
-			NodePtr->value.l_sound.setEmail(updateCar.getEmail());
-			NodePtr->value.l_sound.setODO(updateCar.getODO());
-
-			NodePtr->value.l_general.setCarName(updateCar.getCarName());
-			NodePtr->value.l_general.setPersonalKey(updateCar.getPersonalKey());
-			NodePtr->value.l_general.setServiceRemind(updateCar.getServiceRemind());
-			NodePtr->value.l_general.setEmail(updateCar.getEmail());
-			NodePtr->value.l_general.setODO(updateCar.getODO());
-
-			NodePtr->value.setCarName(updateCar.getCarName());
-			NodePtr->value.setPersonalKey(updateCar.getPersonalKey());
-			NodePtr->value.setServiceRemind(updateCar.getServiceRemind());
-			NodePtr->value.setEmail(updateCar.getEmail());
-			NodePtr->value.setODO(updateCar.getODO());
+			NodePtr->value.m_display_concrete.updateUser(updateCar);
+			
+			NodePtr->value.m_sound_concrete.updateUser(updateCar);
+			
+			NodePtr->value.m_general_concrete.updateUser(updateCar);
+			
+			NodePtr->value.updateUser(updateCar);
+			
 		}
 		if (a < NodePtr->value.getPersonalKey()) {
 			return updateData(a, NodePtr->left);
@@ -344,9 +334,9 @@ void List::updateData(string a, TreeNode*& NodePtr) {
 }
 
 void List::nhapThongTinDisplay(TreeNode*& NodePtr) {
-	static int countdis = 1;
-	bool flagyn{ false };
-	char continues('c');
+	static int s_count = 1;
+	bool confirm_flag{ false };
+	char confirm('c');
 
 
 	if (NodePtr != NULL) {
@@ -355,40 +345,40 @@ void List::nhapThongTinDisplay(TreeNode*& NodePtr) {
 
 		system("cls");
 		cout << "--- Input Display setting ---\n";
-		cout << "Car index: " << countdis << endl;
+		cout << "Car index: " << s_count << endl;
 		NodePtr->value.print_user_data();
-		if (NodePtr->value.l_display.getLightLevel() == 1 && NodePtr->value.l_display.getScreenLightLevel() == 1 && NodePtr->value.l_display.getTaploLightLevel() == 1) {
+		if (NodePtr->value.m_display_concrete.getLightLevel() == 1 && NodePtr->value.m_display_concrete.getScreenLightLevel() == 1 && NodePtr->value.m_display_concrete.getTaploLightLevel() == 1) {
 
 			cout << "\n\t->This is car, data will be appended to your list." << endl;
-			NodePtr->value.l_display.nhapThongTin();
+			NodePtr->value.m_display_concrete.nhapThongTin();
 
 		}
 		else {
 			cout << "\n\t->This car already existed, data will be overwriten.";
-			NodePtr->value.l_display.xuatThongTin();
+			NodePtr->value.m_display_concrete.xuatThongTin();
 		}
-		++countdis;
-		if (countdis <= size()) {
-			while (flagyn != true) {
+		++s_count;
+		if (s_count <= size()) {
+			while (confirm_flag != true) {
 
-				cout << "\nWill input for Car " << countdis << " ? (y/n): ";
-				cin >> continues;
+				cout << "\nWill input for Car " << s_count << " ? (y/n): ";
+				cin >> confirm;
 
-				if (toupper(continues) == 'N') {
+				if (toupper(confirm) == 'N') {
 
-					countdis = 1;
+					s_count = 1;
 
 					return;
 
-					flagyn = true;
+					confirm_flag = true;
 				}
-				if (toupper(continues) == 'Y')
+				if (toupper(confirm) == 'Y')
 				{
 					cin.clear();
 					cin.ignore(100, '\n');
 
 					nhapThongTinDisplay(NodePtr->right);
-					flagyn = true;
+					confirm_flag = true;
 
 				}
 				else {
@@ -403,7 +393,7 @@ void List::nhapThongTinDisplay(TreeNode*& NodePtr) {
 		else {
 			cin.clear();
 			cin.ignore(100, '\n');
-			countdis = 1;
+			s_count = 1;
 
 			return;
 		}
@@ -414,46 +404,46 @@ void List::nhapThongTinDisplay(TreeNode*& NodePtr) {
 }
 
 void List::nhapThongTinSound(TreeNode*& NodePtr) {
-	static int countsnd = 1;
-	bool flagyn{ false };
-	char continues('c');
+	static int s_count = 1;
+	bool confirm_flag{ false };
+	char confirm('c');
 	if (NodePtr != NULL) {
 		nhapThongTinSound(NodePtr->left);
 
 		system("cls");
 		cout << "--- Input Sound setting ---\n";
-		cout << "Car index: " << countsnd << endl;
+		cout << "Car index: " << s_count << endl;
 		NodePtr->value.print_user_data();
-		if (NodePtr->value.l_sound.getCallLevel() == 1 && NodePtr->value.l_sound.getMediaLevel() == 1 && NodePtr->value.l_sound.getNaviLevel() == 1 && NodePtr->value.l_sound.getNotificationLevel() == 1) {
+		if (NodePtr->value.m_sound_concrete.getCallLevel() == 1 && NodePtr->value.m_sound_concrete.getMediaLevel() == 1 && NodePtr->value.m_sound_concrete.getNaviLevel() == 1 && NodePtr->value.m_sound_concrete.getNotificationLevel() == 1) {
 
 			cout << "\n\t->This is car, data will be appended to your list." << endl;
-			NodePtr->value.l_sound.nhapThongTin();
+			NodePtr->value.m_sound_concrete.nhapThongTin();
 
 		}
 		else {
 			cout << "\n\t->This car already existed, data will be overwriten.";
-			NodePtr->value.l_sound.xuatThongTin();
+			NodePtr->value.m_sound_concrete.xuatThongTin();
 		}
-		++countsnd;
-		if (countsnd <= size())
-			while (flagyn != true) {
-				cout << "\nWill input for Car " << countsnd << " ? (y/n): ";
-				cin >> continues;
+		++s_count;
+		if (s_count <= size())
+			while (confirm_flag != true) {
+				cout << "\nWill input for Car " << s_count << " ? (y/n): ";
+				cin >> confirm;
 
-				if (toupper(continues) == 'N') {
+				if (toupper(confirm) == 'N') {
 					cin.clear();
 					cin.ignore(100, '\n');
-					countsnd = 1;
+					s_count = 1;
 					return;
 					//flagyn = true;
 				}
-				if (toupper(continues) == 'Y')
+				if (toupper(confirm) == 'Y')
 				{
 
 					cin.clear();
 					cin.ignore(100, '\n');
 					nhapThongTinSound(NodePtr->right);
-					flagyn = true;
+					confirm_flag = true;
 
 				}
 				else {
@@ -465,7 +455,7 @@ void List::nhapThongTinSound(TreeNode*& NodePtr) {
 		else {
 			cin.clear();
 			cin.ignore(100, '\n');
-			countsnd = 1;
+			s_count = 1;
 			return;
 		}
 
@@ -474,46 +464,46 @@ void List::nhapThongTinSound(TreeNode*& NodePtr) {
 }
 
 void List::nhapThongTinGeneral(TreeNode*& NodePtr) {
-	static int countgen = 1;
-	bool flagyn{ false };
-	char continues('c');
+	static int s_count = 1;
+	bool confirm_flag{ false };
+	char confirm('c');
 	if (NodePtr != NULL) {
 		nhapThongTinGeneral(NodePtr->left);
 
 		system("cls");
 		cout << "--- Input General setting ---\n";
-		cout << "Car index: " << countgen << endl;
+		cout << "Car index: " << s_count << endl;
 		NodePtr->value.print_user_data();
-		if (NodePtr->value.l_general.getLanguage() == "Mandarin (entire branch)" && NodePtr->value.l_general.getTimezone() == "(GMT-12:00)") {
+		if (NodePtr->value.m_general_concrete.getLanguage() == "Mandarin (entire branch)" && NodePtr->value.m_general_concrete.getTimezone() == "(GMT-12:00)") {
 
 			cout << "\n\t->This is car, data will be appended to your list." << endl;
-			NodePtr->value.l_general.nhapThongTin();
+			NodePtr->value.m_general_concrete.nhapThongTin();
 
 		}
 		else {
 			cout << "\n\t->This car already existed, data will be overwriten.";
-			NodePtr->value.l_general.xuatThongTin();
+			NodePtr->value.m_general_concrete.xuatThongTin();
 		}
-		++countgen;
-		if (countgen <= size())
-			while (flagyn != true) {
-				cout << "\nWill input for Car " << countgen << " ? (y/n): ";
-				cin >> continues;
+		++s_count;
+		if (s_count <= size())
+			while (confirm_flag != true) {
+				cout << "\nWill input for Car " << s_count << " ? (y/n): ";
+				cin >> confirm;
 
-				if (toupper(continues) == 'N') {
+				if (toupper(confirm) == 'N') {
 					cin.clear();
 					cin.ignore(100, '\n');
-					countgen = 1;
+					s_count = 1;
 					return;
 
 				}
-				if (toupper(continues) == 'Y')
+				if (toupper(confirm) == 'Y')
 				{
 
 					cin.clear();
 					cin.ignore(100, '\n');
 					nhapThongTinGeneral(NodePtr->right);
-					flagyn = true;
+					confirm_flag = true;
 
 				}
 				else {
@@ -525,7 +515,7 @@ void List::nhapThongTinGeneral(TreeNode*& NodePtr) {
 		else {
 			cin.clear();
 			cin.ignore(100, '\n');
-			countgen = 1;
+			s_count = 1;
 			return;
 		}
 
@@ -574,7 +564,122 @@ void List::writetofileSetting(TreeNode* NodePtr) {
 		writetofileSetting(NodePtr->right);
 	}
 }
+void List::readfromfileSetting() {
+	ifstream ifs_setting;
+	string begin_word;
+	string string_word, parameter_in_string;
+	int parameter{};
+	ifs_setting.open("Setting.txt", ios::in);
+	if (ifs_setting.fail()) {
+		cerr << "Can't open the Setting.txt file to read!";
+		return;
+	}
+	else {
+		try {
 
+			ifs_setting.seekg(0, ios::end);
+			auto size = ifs_setting.tellg();
+			if (size == 0) {
+				cout << "Ready to write on file.";
+				system("cls");
+				cout << "Car number: " << 1 << endl;
+				Car new_car;
+				new_car.nhapThongTin();
+				insertNode(new_car);
+			}
+			else {
+				ifs_setting.seekg(0);
+				while (!ifs_setting.eof()) {
+					Setting data;
+
+					ifs_setting >> begin_word;
+					ifs_setting.seekg(3, 1);
+					getline(ifs_setting, string_word, '/');
+					data.setCarName(string_word);
+
+					getline(ifs_setting, string_word, '/');
+					data.setEmail(string_word);
+
+					getline(ifs_setting, string_word, '/');
+					data.setPersonalKey(string_word);
+
+					getline(ifs_setting, parameter_in_string, '/');
+					parameter = stoi(parameter_in_string);
+					data.setODO(parameter);
+
+					getline(ifs_setting, parameter_in_string, 'S');
+					parameter = stoi(parameter_in_string);
+
+					data.setServiceRemind(parameter);
+
+
+					getline(ifs_setting, begin_word, ':');
+					ifs_setting.seekg(4, 1);
+
+					Sound SND(data);
+
+					getline(ifs_setting, parameter_in_string, '/');
+					parameter = stoi(parameter_in_string);
+					SND.setMediaLevel(parameter);
+
+					getline(ifs_setting, parameter_in_string, '/');
+					parameter = stoi(parameter_in_string);
+					SND.setCallLevel(parameter);
+
+					getline(ifs_setting, parameter_in_string, '/');
+					parameter = stoi(parameter_in_string);
+					SND.setNaviLevel(parameter);
+
+					getline(ifs_setting, parameter_in_string, 'D');
+					parameter = stoi(parameter_in_string);
+					SND.setNotificationLevel(parameter);
+
+					Display DIS(data);
+
+					getline(ifs_setting, begin_word, ':');
+					ifs_setting.seekg(2, 1);
+
+					getline(ifs_setting, parameter_in_string, '/');
+					parameter = stoi(parameter_in_string);
+					DIS.setLightLevel(parameter);
+
+					getline(ifs_setting, parameter_in_string, '/');
+					parameter = stoi(parameter_in_string);
+					DIS.setScreenLightLevel(parameter);
+
+					getline(ifs_setting, parameter_in_string, 'G');
+					parameter = stoi(parameter_in_string);
+					DIS.setTaploLightLevel(parameter);
+
+
+					General GEN(data);
+
+
+
+					getline(ifs_setting, begin_word, ':');
+					ifs_setting.seekg(2, 1);
+					getline(ifs_setting, string_word, '/');
+					GEN.setTimezone(string_word);
+
+					getline(ifs_setting, string_word);
+					GEN.setLanguage(string_word);
+					ifs_setting.ignore(1);
+					Car newCar(data, SND, DIS, GEN);
+					insertNode(newCar);							//Them cac doi tuong vao binary tree them vao DATA_b de kiem tra
+
+				}
+
+			}
+			return;
+		}
+		catch (...) {
+			cerr << "Can't read the Setting.txt file.";
+			system("pause");
+			return;
+		}
+	}
+	ifs_setting.close();
+}
 int List::countNode(TreeNode* nodePtr)								//count all element in TREE 
 {
 	int count = 1;

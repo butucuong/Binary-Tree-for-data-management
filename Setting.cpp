@@ -4,11 +4,11 @@
 
 Setting::Setting()
 {
-	m_car_name="";
-	m_personal_key="" ; 
-	m_email= "";			
-	m_odo=0;
-	m_service_remind=0;
+	m_car_name = "";
+	m_personal_key = "";
+	m_email = "";
+	m_odo = 0;
+	m_service_remind = 0;
 }
 Setting::Setting(string name, string key, string mail, int n1, int n2) {
 	m_car_name = name;
@@ -24,8 +24,9 @@ Setting::Setting(const Setting& h) {
 	this->m_odo = h.m_odo;
 	this->m_service_remind = h.m_service_remind;
 }
-Setting::~Setting(){
+Setting::~Setting() {
 	
+
 }
 Setting& Setting::operator =(Setting& m) {
 	if (this == &m) return *this;					//Avoid self-assigning
@@ -37,7 +38,7 @@ Setting& Setting::operator =(Setting& m) {
 	this->m_service_remind = m.m_service_remind;
 	return *this;
 }
- 
+
 string Setting::getEmail()
 {
 	return m_email;
@@ -164,12 +165,19 @@ void Setting::xuatThongTin() {
 
 }
 void Setting::print_user_data() {
-	cout << "Owner name: " << getCarName() << endl;
-	cout << "Email: " << getEmail() << endl;
-	cout << "Key number: " << getPersonalKey() << endl;
-	cout << "ODO number: " << getODO() << endl;
-	cout << "Remind service (km): " << getServiceRemind() << endl;
+	xuatThongTin();
 }
+
+void Setting::updateUser(Setting h)
+{
+	setCarName(h.getCarName());
+	setEmail(h.getEmail());
+	setPersonalKey(h.getPersonalKey());
+	setODO(h.getODO());
+	setServiceRemind(h.getServiceRemind());
+}
+
+
 
 
 

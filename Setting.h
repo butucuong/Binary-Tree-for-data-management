@@ -3,10 +3,11 @@
 #include <iomanip>
 #include <string>
 #include <fstream>
-
+#include <memory>
+#include "IAction.h"
 using namespace std;
 
-class Setting {
+class Setting: public IAction {
 public:
 	Setting();
 	Setting(const Setting& h);						//Copy constructor
@@ -16,12 +17,12 @@ public:
 	virtual void nhapThongTin();
 	virtual void xuatThongTin();
 	void print_user_data();						//Xuat thong tin chu xe
+	void updateUser(Setting h);
 	
-
 	/*---Getter---*/
 	string getEmail();
 	string getCarName();
-	string getPersonalKey();
+	string getPersonalKey(); 
 	int getODO();
 	int getServiceRemind();
 	/*---Setter---*/
@@ -45,6 +46,7 @@ protected:
 	string m_email;			// email format abc@xyz.com
 	int m_odo;
 	int m_service_remind;
+	
 };
 
 
