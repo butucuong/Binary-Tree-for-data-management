@@ -4,10 +4,10 @@
 #include <string>
 #include <fstream>
 #include <memory>
-#include "IAction.h"
+
 using namespace std;
 
-class Setting: public IAction {
+class Setting{
 public:
 	Setting();
 	Setting(const Setting& h);						//Copy constructor

@@ -9,14 +9,14 @@ class Car:public Setting
 {
 private:
 
-	
-
-
-public:
-	
+		
 	Sound m_sound_concrete;
 	Display m_display_concrete;
 	General m_general_concrete;
+
+
+public:
+
 
 	Car();
 	Car(Setting h,Sound &snd, Display &dis, General &gen);
@@ -31,6 +31,9 @@ public:
 	void xuatThongTinSound();
 	void xuatThongTinGeneral();
 	void writetofileSetting();
+	Sound getSoundConcrete();
+	Display getDisplayConcrete();
+	General getGeneralConcrete();
 	~Car();
 };
 

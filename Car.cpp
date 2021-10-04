@@ -110,3 +110,19 @@ void Car::writetofileSetting(){
 	f.close();
 
 }
+
+Sound Car::getSoundConcrete()
+{
+	return m_sound_concrete;
+
+}
+
+Display Car::getDisplayConcrete()
+{
+	return m_display_concrete;
+}
+
+General Car::getGeneralConcrete()
+{
+	return m_general_concrete;
+}

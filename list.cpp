@@ -314,11 +314,11 @@ void List::updateData(string a, TreeNode*& NodePtr) {
 			Setting updateCar;
 			cin.ignore(1);
 			updateCar.nhapThongTin();
-			NodePtr->value.m_display_concrete.updateUser(updateCar);
+			NodePtr->value.getDisplayConcrete().updateUser(updateCar);
 			
-			NodePtr->value.m_sound_concrete.updateUser(updateCar);
+			NodePtr->value.getSoundConcrete().updateUser(updateCar);
 			
-			NodePtr->value.m_general_concrete.updateUser(updateCar);
+			NodePtr->value.getGeneralConcrete().updateUser(updateCar);
 			
 			NodePtr->value.updateUser(updateCar);
 			
@@ -347,15 +347,15 @@ void List::nhapThongTinDisplay(TreeNode*& NodePtr) {
 		cout << "--- Input Display setting ---\n";
 		cout << "Car index: " << s_count << endl;
 		NodePtr->value.print_user_data();
-		if (NodePtr->value.m_display_concrete.getLightLevel() == 1 && NodePtr->value.m_display_concrete.getScreenLightLevel() == 1 && NodePtr->value.m_display_concrete.getTaploLightLevel() == 1) {
+		if (NodePtr->value.getDisplayConcrete().getLightLevel() == 1 && NodePtr->value.getDisplayConcrete().getScreenLightLevel() == 1 && NodePtr->value.getDisplayConcrete().getTaploLightLevel() == 1) {
 
 			cout << "\n\t->This is car, data will be appended to your list." << endl;
-			NodePtr->value.m_display_concrete.nhapThongTin();
+			NodePtr->value.getDisplayConcrete().nhapThongTin();
 
 		}
 		else {
 			cout << "\n\t->This car already existed, data will be overwriten.";
-			NodePtr->value.m_display_concrete.xuatThongTin();
+			NodePtr->value.getDisplayConcrete().xuatThongTin();
 		}
 		++s_count;
 		if (s_count <= size()) {
@@ -414,15 +414,15 @@ void List::nhapThongTinSound(TreeNode*& NodePtr) {
 		cout << "--- Input Sound setting ---\n";
 		cout << "Car index: " << s_count << endl;
 		NodePtr->value.print_user_data();
-		if (NodePtr->value.m_sound_concrete.getCallLevel() == 1 && NodePtr->value.m_sound_concrete.getMediaLevel() == 1 && NodePtr->value.m_sound_concrete.getNaviLevel() == 1 && NodePtr->value.m_sound_concrete.getNotificationLevel() == 1) {
+		if (NodePtr->value.getSoundConcrete().getCallLevel() == 1 && NodePtr->value.getSoundConcrete().getMediaLevel() == 1 && NodePtr->value.getSoundConcrete().getNaviLevel() == 1 && NodePtr->value.getSoundConcrete().getNotificationLevel() == 1) {
 
 			cout << "\n\t->This is car, data will be appended to your list." << endl;
-			NodePtr->value.m_sound_concrete.nhapThongTin();
+			NodePtr->value.getSoundConcrete().nhapThongTin();
 
 		}
 		else {
 			cout << "\n\t->This car already existed, data will be overwriten.";
-			NodePtr->value.m_sound_concrete.xuatThongTin();
+			NodePtr->value.getSoundConcrete().xuatThongTin();
 		}
 		++s_count;
 		if (s_count <= size())
@@ -474,15 +474,15 @@ void List::nhapThongTinGeneral(TreeNode*& NodePtr) {
 		cout << "--- Input General setting ---\n";
 		cout << "Car index: " << s_count << endl;
 		NodePtr->value.print_user_data();
-		if (NodePtr->value.m_general_concrete.getLanguage() == "Mandarin (entire branch)" && NodePtr->value.m_general_concrete.getTimezone() == "(GMT-12:00)") {
+		if (NodePtr->value.getGeneralConcrete().getLanguage() == "Mandarin (entire branch)" && NodePtr->value.getGeneralConcrete().getTimezone() == "(GMT-12:00)") {
 
 			cout << "\n\t->This is car, data will be appended to your list." << endl;
-			NodePtr->value.m_general_concrete.nhapThongTin();
+			NodePtr->value.getGeneralConcrete().nhapThongTin();
 
 		}
 		else {
 			cout << "\n\t->This car already existed, data will be overwriten.";
-			NodePtr->value.m_general_concrete.xuatThongTin();
+			NodePtr->value.getGeneralConcrete().xuatThongTin();
 		}
 		++s_count;
 		if (s_count <= size())
